@@ -1,3 +1,5 @@
+//THIS IS CAROLYN'S SECOND COMMENT
+
 /*********************************************************************
 This is an Arduino library for our Monochrome SHARP Memory Displays
 
