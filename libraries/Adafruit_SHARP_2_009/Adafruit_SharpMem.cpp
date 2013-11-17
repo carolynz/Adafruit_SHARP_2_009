@@ -203,7 +203,6 @@ void Adafruit_SharpMem::drawTabs(void){
   drawChar(205, 13, 'T', BLACK, WHITE, 2);
   drawChar(217, 13, 'S', BLACK, WHITE, 2);
 
-  // tab 1
   drawFastVLine(0, 0, 40, BLACK);
   drawFastVLine(63, 0, 40, BLACK);
   drawFastVLine(127, 0, 40, BLACK);
@@ -220,8 +219,16 @@ void Adafruit_SharpMem::drawTabs(void){
 *                   3 - Depth menu position
 */
 void Adafruit_SharpMem::drawTabSettings(uint8_t position){
-  // uint16_t x;
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+
+  // draw divider lines
+  drawFastVLine(0, 0, 40, BLACK);
+  drawFastVLine(63, 0, 40, BLACK);
+  drawFastVLine(127, 0, 40, BLACK);
+  drawFastVLine(199, 0, 40, BLACK);
+  drawFastVLine(255, 0, 40, BLACK);
+  drawFastVLine(319, 0, 40, BLACK);
+
   switch(position){
     // Pace
     case 0:
