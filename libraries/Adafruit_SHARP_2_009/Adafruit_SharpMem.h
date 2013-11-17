@@ -42,7 +42,13 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   // DRAW functions load the right pixels into the buffer
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void drawTabs(void);
-  void drawTabLine(uint8_t position);
+  void drawTabSettings(uint8_t position);
+  // void drawTabSettings(uint8_t position,
+  //                      uint8_t paceMin = 1, uint8_t paceSec = 0,
+  //                      uint8_t breakMin = 0, uint8_t breakSec = 0,
+  //                      uint8_t length = 5,
+  //                      uint8_t depth = 3,
+  //                      uint8_t imperial = true);
   void drawTime(uint8_t min = 1, uint8_t sec = 0);
   void drawNum(int16_t x, int16_t y, uint8_t num);
   void drawColon(int16_t x, int16_t y);
@@ -51,7 +57,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   // at the appropriate locations
   void refresh(uint8_t section);
   void refreshTabs(void);
-  void refreshTabLine(void);
+  void refreshTabSettings(void);
   void refreshSetValues(void);
   void refreshCentral(void);
   void refreshDenominator(void);
@@ -61,8 +67,9 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   void renderTime(uint8_t min = 1, uint8_t sec = 0);
   void renderScreenPace(bool renderAll = true, uint8_t min = 1, uint8_t sec = 0);
   void renderScreenBreak(bool renderAll = true, uint8_t min = 0, uint8_t sec = 0);
-  void renderScreenUnits(bool renderAll = true, bool imperial = true);
+  void renderScreenLength(bool renderAll = true, uint8_t length = 25);
   void renderScreenDepth(bool renderAll = true, uint8_t depth = 3);
+  void renderScreenUnits(bool renderAll = true, bool imperial = true);
   // void renderScreenSwim(uint8_t laps);
   // void renderScreenPause(uint8_t seconds);
 

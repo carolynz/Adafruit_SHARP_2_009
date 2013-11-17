@@ -219,25 +219,30 @@ void Adafruit_SharpMem::drawTabs(void){
 *                   2 - Units menu position
 *                   3 - Depth menu position
 */
-void Adafruit_SharpMem::drawTabLine(uint8_t position){
+void Adafruit_SharpMem::drawTabSettings(uint8_t position){
   // uint16_t x;
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   switch(position){
+    // Pace
     case 0:
       drawFastHLine(SHARPMEM_LCDWIDTH/5, 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
+    // Break
     case 1:
       drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/5, BLACK);
       drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
+    // Length
     case 2:
       drawFastHLine(0, 0, (2*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
+    // Depth
     case 3:
       drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
+    // Units
     case 5:
       drawFastHLine(0, 0, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
@@ -421,158 +426,22 @@ void Adafruit_SharpMem::refresh(uint8_t section){
 } 
 
 void Adafruit_SharpMem::refreshTabs(void){
-  // uint16_t i, totalbytes, currentline, oldline;  
-  // totalbytes = (SHARPMEM_LCDWIDTH * 40) / 8;
-
-  // // Send the write command
-  // digitalWrite(_ss, HIGH);
-  // sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  // TOGGLE_VCOM;
-
-  // // Send the address for line 1
-  // oldline = currentline = 1;
-  // sendbyteLSB(currentline);
-
-  // // Send image buffer
-  // for (i=0; i<totalbytes; i++)
-  // {
-  //   sendbyteLSB(sectionBuffer[i]);
-  //   currentline = ((i+1)/(SHARPMEM_LCDWIDTH/8)) + 1;
-  //   if(currentline != oldline)
-  //   {
-  //     // Send end of line and address bytes
-  //     sendbyteLSB(0x00);
-  //     sendbyteLSB(currentline);
-  //     oldline = currentline;
-  //   }
-  // }
-
-  // // Send another trailing 8 bits for the last line
-  // sendbyteLSB(0x00);
-  // digitalWrite(_ss, LOW);
   refresh(0);
 }
 
-void Adafruit_SharpMem::refreshTabLine(void){
-  // uint16_t i, totalbytes, currentline;  
-  // totalbytes = SHARPMEM_LCDWIDTH / 8;
-
-  // // Send the write command
-  // digitalWrite(_ss, HIGH);
-  // sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  // TOGGLE_VCOM;
-
-  // // Send the address for line 41 (line number of the tab line)
-  // currentline = 41;
-  // sendbyteLSB(currentline);
-
-  // // Send image buffer
-  // for (i=0; i<totalbytes; i++)
-  // {
-  //   sendbyteLSB(sectionBuffer[i]);
-  // }
-
-  // // Send another trailing 8 bits for the last line
-  // sendbyteLSB(0x00);
-  // digitalWrite(_ss, LOW);
+void Adafruit_SharpMem::refreshTabSettings(void){
   refresh(1);
 }
 
 void Adafruit_SharpMem::refreshSetValues(void){
-  // uint16_t i, totalbytes, currentline, oldline;  
-  // totalbytes = (SHARPMEM_LCDWIDTH * 39) / 8;
-
-  // // Send the write command
-  // digitalWrite(_ss, HIGH);
-  // sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  // TOGGLE_VCOM;
-
-  // // Send the address for line 42 (line number where SetValues starts)
-  // oldline = currentline = 42;
-  // sendbyteLSB(currentline);
-
-  // // Send image buffer
-  // for (i=0; i<totalbytes; i++)
-  // {
-  //   sendbyteLSB(sectionBuffer[i]);
-  //   currentline = ((i+1)/(SHARPMEM_LCDWIDTH/8)) + 42;
-  //   if(currentline != oldline)
-  //   {
-  //     // Send end of line and address bytes
-  //     sendbyteLSB(0x00);
-  //     sendbyteLSB(currentline);
-  //     oldline = currentline;
-  //   }
-  // }
-
-  // // Send another trailing 8 bits for the last line
-  // sendbyteLSB(0x00);
-  // digitalWrite(_ss, LOW);
   refresh(2);
 }
 
 void Adafruit_SharpMem::refreshCentral(void){
-  // uint16_t i, totalbytes, currentline, oldline;  
-  // totalbytes = (SHARPMEM_LCDWIDTH * 75) / 8;
-
-  // // Send the write command
-  // digitalWrite(_ss, HIGH);
-  // sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  // TOGGLE_VCOM;
-
-  // oldline = currentline = 81;
-  // // oldline = currentline = 1;
-
-  // sendbyteLSB(currentline);
-
-  // // Send image buffer
-  // for (i=0; i<totalbytes; i++)
-  // {
-  //   sendbyteLSB(sectionBuffer[i]);
-  //   currentline = ((i+1)/(SHARPMEM_LCDWIDTH/8)) + 81;
-  //   if(currentline != oldline)
-  //   {
-  //     // Send end of line and address bytes
-  //     sendbyteLSB(0x00);
-  //     sendbyteLSB(currentline);
-  //     oldline = currentline;
-  //   }
-  // }
-  // // Send another trailing 8 bits for the last line
-  // sendbyteLSB(0x00);
-  // digitalWrite(_ss, LOW);
   refresh(3);
 }
 
 void Adafruit_SharpMem::refreshDenominator(void){
-  // uint16_t i, totalbytes, currentline, oldline;  
-  // totalbytes = (SHARPMEM_LCDWIDTH * 75) / 8;
-
-  // // Send the write command
-  // digitalWrite(_ss, HIGH);
-  // sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  // TOGGLE_VCOM;
-
-  // oldline = currentline = 161;
-
-  // sendbyteLSB(currentline);
-
-  // // Send image buffer
-  // for (i=0; i<totalbytes; i++)
-  // {
-  //   sendbyteLSB(sectionBuffer[i]);
-  //   currentline = ((i+1)/(SHARPMEM_LCDWIDTH/8)) + 161;
-  //   if(currentline != oldline)
-  //   {
-  //     // Send end of line and address bytes
-  //     sendbyteLSB(0x00);
-  //     sendbyteLSB(currentline);
-  //     oldline = currentline;
-  //   }
-  // }
-  // // Send another trailing 8 bits for the last line
-  // sendbyteLSB(0x00);
-  // digitalWrite(_ss, LOW);
   refresh(4);
 }
 
@@ -581,17 +450,32 @@ void Adafruit_SharpMem::renderTime(uint8_t min, uint8_t sec){
   refreshCentral();
 }
 
-void Adafruit_SharpMem::renderScreenPace( bool renderAll,
-                                          uint8_t min,
-                                          uint8_t sec ){
+void Adafruit_SharpMem::renderScreenPace( bool renderAll, uint8_t min, uint8_t sec ){
+  if (renderAll){
+    drawTabs();
+    refreshTabs();  
+  }
+
+  drawTabSettings(0);
+  refreshTabSettings();
+
+  // draw time
+  drawTime(min, sec);
+  refreshCentral();
+
+  drawDenominator();
+  refreshDenominator();
+}
+
+void Adafruit_SharpMem::renderScreenBreak( bool renderAll, uint8_t min, uint8_t sec ){
   if (renderAll){
     drawTabs();
     refreshTabs();  
   }
 
   // draw pace tab line
-  drawTabLine(0);
-  refreshTabLine();
+  drawTabSettings(1);
+  refreshTabSettings();
 
   // draw time
   drawTime(min, sec);
@@ -602,35 +486,15 @@ void Adafruit_SharpMem::renderScreenPace( bool renderAll,
   refreshDenominator();
 }
 
-void Adafruit_SharpMem::renderScreenBreak( bool renderAll,
-                                          uint8_t min,
-                                          uint8_t sec ){
+void Adafruit_SharpMem::renderScreenLength( bool renderAll, uint8_t length ){
   if (renderAll){
     drawTabs();
     refreshTabs();  
   }
 
-  // draw pace tab line
-  drawTabLine(1);
-  refreshTabLine();
-
-  // draw time
-  drawTime(min, sec);
-  refreshCentral();
-
-  //TODO: draw the 100 yds
-  drawDenominator();
-  refreshDenominator();
-}
-
-void Adafruit_SharpMem::renderScreenUnits( bool renderAll, bool imperial){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
-  // draw units tab line
-  drawTabLine(2);
-  refreshTabLine();
+  // draw length tab line
+  drawTabSettings(2);
+  refreshTabSettings();
 }
 
 
@@ -641,7 +505,20 @@ void Adafruit_SharpMem::renderScreenDepth( bool renderAll, uint8_t depth ){
   }
 
   // draw depth tab line
-  drawTabLine(3);
-  refreshTabLine();
+  drawTabSettings(3);
+  refreshTabSettings();
 }
+
+
+void Adafruit_SharpMem::renderScreenUnits( bool renderAll, bool imperial){
+  if (renderAll){
+    drawTabs();
+    refreshTabs();  
+  }
+  // draw units tab line
+  drawTabSettings(4);
+  refreshTabSettings();
+}
+
+
 
