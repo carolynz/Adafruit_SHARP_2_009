@@ -69,6 +69,16 @@ Adafruit_GFX(SHARPMEM_LCDWIDTH, SHARPMEM_LCDHEIGHT) {
   
   // Set the vcom bit to a defined state
   _sharpmem_vcom = SHARPMEM_BIT_VCOM;
+
+  // Set defaults for pace, break, units, etc.
+  paceMin = 1;
+  paceSec = 0;
+  breakMin = 0;
+  breakSec = 0;
+  length = 25;
+  depth = 3;
+  imperial = true;
+
 }
 
 void Adafruit_SharpMem::begin() {
@@ -175,7 +185,7 @@ void Adafruit_SharpMem::drawTabs(void){
   // draw top line of tabs
   drawFastHLine(0, 0, 320, BLACK);
 
-  //TODO: change x-coords for 5 tabs
+  //TODO: change x-coords for 5-tab layout
   drawChar(17, 13, 'P', BLACK, WHITE, 2);
   drawChar(28, 13, 'A', BLACK, WHITE, 2);
   drawChar(40, 13, 'C', BLACK, WHITE, 2);
@@ -211,12 +221,14 @@ void Adafruit_SharpMem::drawTabs(void){
   drawFastVLine(319, 0, 40, BLACK);
 }
 
-/**
-* @param position - unsigned 8-bit integer, possible values of 0, 1, 2, 3:
-*                   0 - Pace menu position
-*                   1 - Break menu position
-*                   2 - Units menu position
-*                   3 - Depth menu position
+/*!
+ Fills buffer with the settings that go under each tab
+ @param position - unsigned 8-bit integer, possible values of 0, 1, 2, 3, 4:
+                   0 - Pace menu position
+                   1 - Break menu position
+                   2 - Length menu position
+                   3 - Depth menu position
+                   4 - Units menu position
 */
 void Adafruit_SharpMem::drawTabSettings(uint8_t position){
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
@@ -228,6 +240,14 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
   drawFastVLine(199, 0, 40, BLACK);
   drawFastVLine(255, 0, 40, BLACK);
   drawFastVLine(319, 0, 40, BLACK);
+
+  /*! TODO: add in text for tab settings
+            - pace
+            - break
+            - length
+            - depth
+            - units
+  */
 
   switch(position){
     // Pace
@@ -354,26 +374,6 @@ void Adafruit_SharpMem::drawDenominator(int16_t length, bool imperial){
 
 /**************************************************************************/
 /*! 
-    @brief Gets the value (1 or 0) of the specified pixel from the buffer
-
-    @param[in]  x
-                The x position (0 based)
-    @param[in]  y
-                The y position (0 based)
-
-    @return     1 if the pixel is enabled, 0 if disabled
-*/
-/**************************************************************************/
-uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y)
-{
-  if ((x >=SHARPMEM_LCDWIDTH) || (y >=SHARPMEM_LCDHEIGHT)) return 0;
-  if ((x >=SHARPMEM_LCDWIDTH) || (y >=BUFFER_HEIGHT)) return 0;
-  //TODO: handle section logic here
-  return sectionBuffer[(y*SHARPMEM_LCDWIDTH + x) /8] & (1 << x % 8) ? 1 : 0;
-}
-
-/**************************************************************************/
-/*! 
     @brief Clears the screen
 */
 /**************************************************************************/
@@ -470,35 +470,34 @@ void Adafruit_SharpMem::renderTime(uint8_t min, uint8_t sec){
   refreshCentral();
 }
 
-void Adafruit_SharpMem::renderScreenPace( bool renderAll, uint8_t min, uint8_t sec ){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
-
+/*! 
+  Displays the Pace screen
+  - uses stored values for the tab settings numbers and drawTime numbers
+*/
+void Adafruit_SharpMem::renderScreenPace(void){
   drawTabSettings(0);
   refreshTabSettings();
 
-  // draw time
-  drawTime(min, sec);
+  drawTime(paceMin, paceSec);    
   refreshCentral();
 
   drawDenominator();
   refreshDenominator();
 }
 
-void Adafruit_SharpMem::renderScreenBreak( bool renderAll, uint8_t min, uint8_t sec ){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
+/*! 
+  Displays the Break screen
+  - uses stored values for the tab settings numbers and drawTime numbers
+*/
+void Adafruit_SharpMem::renderScreenBreak(void){
+  drawTabs();
+  refreshTabs();  
 
   // draw pace tab line
   drawTabSettings(1);
   refreshTabSettings();
 
-  // draw time
-  drawTime(min, sec);
+  drawTime(breakMin, breakSec);    
   refreshCentral();
 
   //TODO: draw the 100 yds
@@ -506,11 +505,10 @@ void Adafruit_SharpMem::renderScreenBreak( bool renderAll, uint8_t min, uint8_t 
   refreshDenominator();
 }
 
-void Adafruit_SharpMem::renderScreenLength( bool renderAll, uint8_t length ){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
+void Adafruit_SharpMem::renderScreenLength(void){
+  drawTabs();
+  refreshTabs();  
+
 
   // draw length tab line
   drawTabSettings(2);
@@ -518,11 +516,9 @@ void Adafruit_SharpMem::renderScreenLength( bool renderAll, uint8_t length ){
 }
 
 
-void Adafruit_SharpMem::renderScreenDepth( bool renderAll, uint8_t depth ){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
+void Adafruit_SharpMem::renderScreenDepth(void){
+  drawTabs();
+  refreshTabs();  
 
   // draw depth tab line
   drawTabSettings(3);
@@ -530,15 +526,76 @@ void Adafruit_SharpMem::renderScreenDepth( bool renderAll, uint8_t depth ){
 }
 
 
-void Adafruit_SharpMem::renderScreenUnits( bool renderAll, bool imperial){
-  if (renderAll){
-    drawTabs();
-    refreshTabs();  
-  }
+void Adafruit_SharpMem::renderScreenUnits(void){
+  drawTabs();
+  refreshTabs();  
+
   // draw units tab line
   drawTabSettings(4);
   refreshTabSettings();
 }
 
+/**************************************************************************/
+/*! 
+    @brief Gets the value (1 or 0) of the specified pixel from the buffer
 
+    @param[in]  x
+                The x position (0 based)
+    @param[in]  y
+                The y position (0 based)
 
+    @return     1 if the pixel is enabled, 0 if disabled
+*/
+/**************************************************************************/
+uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y)
+{
+  if ((x >=SHARPMEM_LCDWIDTH) || (y >=SHARPMEM_LCDHEIGHT)) return 0;
+  if ((x >=SHARPMEM_LCDWIDTH) || (y >=BUFFER_HEIGHT)) return 0;
+  //TODO: handle section logic here
+  return sectionBuffer[(y*SHARPMEM_LCDWIDTH + x) /8] & (1 << x % 8) ? 1 : 0;
+}
+
+uint8_t Adafruit_SharpMem::getPaceMin(void){
+  return paceMin;
+}
+
+uint8_t Adafruit_SharpMem::getPaceSec(void){
+  return paceSec;
+}
+uint8_t Adafruit_SharpMem::getBreakMin(void){
+  return breakMin;
+}
+uint8_t Adafruit_SharpMem::getBreakSec(void){
+  return breakSec;
+}
+uint8_t Adafruit_SharpMem::getLength(void){
+  return length;
+}
+uint8_t Adafruit_SharpMem::getDepth(void){
+  return depth;
+}
+bool Adafruit_SharpMem::getImperial(void){
+  return imperial;
+}
+
+void Adafruit_SharpMem::setPaceMin(uint8_t min){
+  paceMin = min;
+}
+void Adafruit_SharpMem::setPaceSec(uint8_t sec){
+  paceSec = sec;
+}
+void Adafruit_SharpMem::setBreakMin(uint8_t min){
+  breakMin = min;
+}
+void Adafruit_SharpMem::setBreakSec(uint8_t sec){
+  breakSec = sec;
+}
+void Adafruit_SharpMem::setLength(uint8_t len){
+  length = len;
+}
+void Adafruit_SharpMem::setDepth(uint8_t dep){
+  depth = dep;
+}
+void Adafruit_SharpMem::setImperial(bool imp){
+  imperial = imp;
+}

@@ -35,7 +35,6 @@ class Adafruit_SharpMem : public Adafruit_GFX {
  public:
   Adafruit_SharpMem(uint8_t clk, uint8_t mosi, uint8_t ss);
   void begin(void);
-  uint8_t getPixel(uint16_t x, uint16_t y);
   void clearDisplay();
   // void refresh(void);
 
@@ -49,7 +48,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   //                      uint8_t length = 5,
   //                      uint8_t depth = 3,
   //                      uint8_t imperial = true);
-  void drawTime(uint8_t min = 1, uint8_t sec = 0);
+  void drawTime(uint8_t min, uint8_t sec);
   void drawNum(int16_t x, int16_t y, uint8_t num);
   void drawColon(int16_t x, int16_t y);
   void drawDenominator(int16_t length = 100, bool imperial = true);
@@ -64,20 +63,47 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   
   // RENDER functions wrap draw + refresh. 
   // Use these.
-  void renderTime(uint8_t min = 1, uint8_t sec = 0);
-  void renderScreenPace(bool renderAll = true, uint8_t min = 1, uint8_t sec = 0);
-  void renderScreenBreak(bool renderAll = true, uint8_t min = 0, uint8_t sec = 0);
-  void renderScreenLength(bool renderAll = true, uint8_t length = 25);
-  void renderScreenDepth(bool renderAll = true, uint8_t depth = 3);
-  void renderScreenUnits(bool renderAll = true, bool imperial = true);
+  void renderTime(uint8_t min, uint8_t sec);
+  // TODO: write the other center renders
+
+  void renderScreenPace(void);
+  void renderScreenBreak(void);
+  void renderScreenLength(void);
+  void renderScreenDepth(void);
+  void renderScreenUnits(void);
   // void renderScreenSwim(uint8_t laps);
   // void renderScreenPause(uint8_t seconds);
 
+  // getters and setters
+  uint8_t
+    getPixel(uint16_t x, uint16_t y),
+    getPaceMin(void),
+    getPaceSec(void),
+    getBreakMin(void),
+    getBreakSec(void),
+    getLength(void),
+    getDepth(void);
+
+  bool getImperial(void);
+
+  void
+    setPaceMin(uint8_t min),
+    setPaceSec(uint8_t sec),
+    setBreakMin(uint8_t min),
+    setBreakSec(uint8_t sec),
+    setLength(uint8_t len),
+    setDepth(uint8_t dep),
+    setImperial(bool imp);
+
  private:
-  uint8_t _ss, _clk, _mosi;
   volatile uint8_t *dataport, *clkport;
-  uint8_t _sharpmem_vcom, datapinmask, clkpinmask;
-  
+  uint8_t
+    _ss, _clk, _mosi,
+    _sharpmem_vcom, datapinmask, clkpinmask,
+    paceMin, paceSec, breakMin, breakSec,
+    length, depth;
+  bool imperial;
+
   void sendbyte(uint8_t data);
   void sendbyteLSB(uint8_t data);
 };
