@@ -172,13 +172,10 @@ void Adafruit_SharpMem::drawTabs(void){
   y = 0;
   // clear buffer
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  // draw lines for top of tabs
-  drawFastHLine(10, 0, 60, BLACK);
-  drawFastHLine(90, 0, 60, BLACK);
-  drawFastHLine(170, 0, 60, BLACK);
-  drawFastHLine(250, 0, 60, BLACK);
+  // draw top line of tabs
+  drawFastHLine(0, 0, 320, BLACK);
 
-  //TODO: need to do this in a more elegant way
+  //TODO: change x-coords for 5 tabs
   drawChar(17, 13, 'P', BLACK, WHITE, 2);
   drawChar(28, 13, 'A', BLACK, WHITE, 2);
   drawChar(40, 13, 'C', BLACK, WHITE, 2);
@@ -190,33 +187,29 @@ void Adafruit_SharpMem::drawTabs(void){
   drawChar(127, 13, 'A', BLACK, WHITE, 2);
   drawChar(139, 13, 'K', BLACK, WHITE, 2);
 
-  drawChar(173, 13, 'U', BLACK, WHITE, 2);
-  drawChar(185, 13, 'N', BLACK, WHITE, 2);
-  drawChar(195, 13, 'I', BLACK, WHITE, 2);
-  drawChar(205, 13, 'T', BLACK, WHITE, 2);
-  drawChar(217, 13, 'S', BLACK, WHITE, 2);
-
+  drawChar(251, 13, 'L', BLACK, WHITE, 2);
+  drawChar(263, 13, 'E', BLACK, WHITE, 2);
+  drawChar(275, 13, 'N', BLACK, WHITE, 2);
+  
   drawChar(251, 13, 'D', BLACK, WHITE, 2);
   drawChar(263, 13, 'E', BLACK, WHITE, 2);
   drawChar(275, 13, 'P', BLACK, WHITE, 2);
   drawChar(287, 13, 'T', BLACK, WHITE, 2);
   drawChar(299, 13, 'H', BLACK, WHITE, 2);
 
+  drawChar(173, 13, 'U', BLACK, WHITE, 2);
+  drawChar(185, 13, 'N', BLACK, WHITE, 2);
+  drawChar(195, 13, 'I', BLACK, WHITE, 2);
+  drawChar(205, 13, 'T', BLACK, WHITE, 2);
+  drawChar(217, 13, 'S', BLACK, WHITE, 2);
+
   // tab 1
-  drawLine(10, 0, 0, 39, BLACK); // left line
-  drawLine(69, 0, 79, 39, BLACK); // right line
-
-  // tab 2
-  drawLine(90, 0, 80, 39, BLACK); // left line
-  drawLine(149, 0, 159, 39, BLACK); // right line
-
-  // tab 3
-  drawLine(170, 0, 160, 39, BLACK); // left line
-  drawLine(229, 0, 239, 39, BLACK); // right line
-
-  // tab 4
-  drawLine(250, 0, 240, 39, BLACK); // left line
-  drawLine(309, 0, 319, 39, BLACK); // right line
+  drawFastVLine(0, 0, 40, BLACK);
+  drawFastVLine(63, 0, 40, BLACK);
+  drawFastVLine(127, 0, 40, BLACK);
+  drawFastVLine(199, 0, 40, BLACK);
+  drawFastVLine(255, 0, 40, BLACK);
+  drawFastVLine(319, 0, 40, BLACK);
 }
 
 /**
@@ -231,18 +224,22 @@ void Adafruit_SharpMem::drawTabLine(uint8_t position){
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   switch(position){
     case 0:
-      drawFastHLine(SHARPMEM_LCDWIDTH/4, 0, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(SHARPMEM_LCDWIDTH/5, 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
     case 1:
-      drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/4, BLACK);
-      drawFastHLine(SHARPMEM_LCDWIDTH/2, 0, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/5, BLACK);
+      drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
     case 2:
-      drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/2, BLACK);
-      drawFastHLine((3*SHARPMEM_LCDWIDTH/4), 0, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 0, (2*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
       break;
     case 3:
-      drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/4), BLACK);
+      drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
+      break;
+    case 5:
+      drawFastHLine(0, 0, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
     default:
       break;
