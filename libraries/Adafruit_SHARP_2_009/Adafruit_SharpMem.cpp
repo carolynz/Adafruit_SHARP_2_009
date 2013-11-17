@@ -226,25 +226,36 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
     // Pace
     case 0:
       drawFastHLine(SHARPMEM_LCDWIDTH/5, 0, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(SHARPMEM_LCDWIDTH/5, 40, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Break
     case 1:
       drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/5, BLACK);
       drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
+
+      drawFastHLine(0, 40, SHARPMEM_LCDWIDTH/5, BLACK);
+      drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Length
     case 2:
       drawFastHLine(0, 0, (2*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
+
+      drawFastHLine(0, 40, (2*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Depth
     case 3:
       drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
+
+      drawFastHLine(0, 40, (2*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Units
     case 5:
       drawFastHLine(0, 0, (4*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine(0, 40, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
     default:
       break;
