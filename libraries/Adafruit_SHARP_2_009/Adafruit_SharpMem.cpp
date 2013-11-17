@@ -89,7 +89,6 @@ void Adafruit_SharpMem::begin() {
 /* PRIVATE METHODS */
 /* *************** */
 
- 
 /**************************************************************************/
 /*!
     @brief  Sends a single byte in pseudo-SPI.
@@ -147,6 +146,8 @@ void Adafruit_SharpMem::sendbyteLSB(uint8_t data)
   //digitalWrite(_clk, LOW);
   *clkport &= ~clkpinmask;
 }
+
+
 /* ************** */
 /* PUBLIC METHODS */
 /* ************** */
@@ -186,37 +187,38 @@ void Adafruit_SharpMem::drawTabs(void){
   drawFastHLine(0, 0, 320, BLACK);
 
   //TODO: change x-coords for 5-tab layout
-  drawChar(17, 13, 'P', BLACK, WHITE, 2);
-  drawChar(28, 13, 'A', BLACK, WHITE, 2);
-  drawChar(40, 13, 'C', BLACK, WHITE, 2);
-  drawChar(52, 13, 'E', BLACK, WHITE, 2);
+  drawChar(4, 13, 'P', BLACK, WHITE, 2);
+  drawChar(16, 13, 'A', BLACK, WHITE, 2);
+  drawChar(28, 13, 'C', BLACK, WHITE, 2);
+  drawChar(40, 13, 'E', BLACK, WHITE, 2);
 
-  drawChar(91, 13, 'B', BLACK, WHITE, 2);
-  drawChar(103, 13, 'R', BLACK, WHITE, 2);
-  drawChar(115, 13, 'E', BLACK, WHITE, 2);
-  drawChar(127, 13, 'A', BLACK, WHITE, 2);
-  drawChar(139, 13, 'K', BLACK, WHITE, 2);
+  drawChar(68, 13, 'B', BLACK, WHITE, 2);
+  drawChar(80, 13, 'R', BLACK, WHITE, 2);
+  drawChar(92, 13, 'E', BLACK, WHITE, 2);
+  drawChar(104, 13, 'A', BLACK, WHITE, 2);
+  drawChar(116, 13, 'K', BLACK, WHITE, 2);
 
-  drawChar(251, 13, 'L', BLACK, WHITE, 2);
-  drawChar(263, 13, 'E', BLACK, WHITE, 2);
-  drawChar(275, 13, 'N', BLACK, WHITE, 2);
+  drawChar(135, 13, 'L', BLACK, WHITE, 2);
+  drawChar(147, 13, 'E', BLACK, WHITE, 2);
+  drawChar(159, 13, 'N', BLACK, WHITE, 2);
   
-  drawChar(251, 13, 'D', BLACK, WHITE, 2);
-  drawChar(263, 13, 'E', BLACK, WHITE, 2);
-  drawChar(275, 13, 'P', BLACK, WHITE, 2);
-  drawChar(287, 13, 'T', BLACK, WHITE, 2);
-  drawChar(299, 13, 'H', BLACK, WHITE, 2);
+  drawChar(193, 13, 'D', BLACK, WHITE, 2);
+  drawChar(205, 13, 'E', BLACK, WHITE, 2);
+  drawChar(217, 13, 'P', BLACK, WHITE, 2);
+  drawChar(229, 13, 'T', BLACK, WHITE, 2);
+  drawChar(241, 13, 'H', BLACK, WHITE, 2);
 
-  drawChar(173, 13, 'U', BLACK, WHITE, 2);
-  drawChar(185, 13, 'N', BLACK, WHITE, 2);
-  drawChar(195, 13, 'I', BLACK, WHITE, 2);
-  drawChar(205, 13, 'T', BLACK, WHITE, 2);
-  drawChar(217, 13, 'S', BLACK, WHITE, 2);
+  drawChar(258, 13, 'U', BLACK, WHITE, 2);
+  drawChar(270, 13, 'N', BLACK, WHITE, 2);
+  drawChar(282, 13, 'I', BLACK, WHITE, 2);
+  drawChar(294, 13, 'T', BLACK, WHITE, 2);
+  drawChar(306, 13, 'S', BLACK, WHITE, 2);
+
 
   drawFastVLine(0, 0, 40, BLACK);
   drawFastVLine(63, 0, 40, BLACK);
   drawFastVLine(127, 0, 40, BLACK);
-  drawFastVLine(199, 0, 40, BLACK);
+  drawFastVLine(190, 0, 40, BLACK);
   drawFastVLine(255, 0, 40, BLACK);
   drawFastVLine(319, 0, 40, BLACK);
 }
@@ -237,56 +239,99 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
   drawFastVLine(0, 0, 40, BLACK);
   drawFastVLine(63, 0, 40, BLACK);
   drawFastVLine(127, 0, 40, BLACK);
-  drawFastVLine(199, 0, 40, BLACK);
+  drawFastVLine(190, 0, 40, BLACK);
   drawFastVLine(255, 0, 40, BLACK);
   drawFastVLine(319, 0, 40, BLACK);
 
-  /*! TODO: add in text for tab settings
-            - pace
-            - break
-            - length
-            - depth
-            - units
-  */
+  // draw pace
+  drawChar(4, 13, toUC(paceMin), BLACK, WHITE, 2);
+  drawChar(16, 13, ':', BLACK, WHITE, 2);
+  if (paceSec < 10){
+    drawChar(28, 13, '0', BLACK, WHITE, 2);
+    drawChar(40, 13, toUC(paceSec), BLACK, WHITE, 2);
+  }else{
+    drawChar(28, 13, toUC(paceSec/10), BLACK, WHITE, 2);
+    drawChar(40, 13, toUC(paceSec%10), BLACK, WHITE, 2);
+  }
+
+  // draw break
+  drawChar(65, 13, toUC(breakMin), BLACK, WHITE, 2);
+  drawChar(77, 13, ':', BLACK, WHITE, 2);
+  if (breakSec < 10){
+    drawChar(89, 13, '0', BLACK, WHITE, 2);
+    drawChar(101, 13, toUC(breakSec), BLACK, WHITE, 2);
+  }else{
+    drawChar(89, 13, toUC(breakSec/10), BLACK, WHITE, 2);
+    drawChar(101, 13, toUC(breakSec%10), BLACK, WHITE, 2);
+  }
+
+  // draw len
+  drawChar(131, 13, toUC(length/10), BLACK, WHITE, 2);
+  drawChar(142, 13, toUC(length%10), BLACK, WHITE, 2);
+  if (imperial){
+    drawChar(154, 13, 'Y', BLACK, WHITE, 2);
+    drawChar(166, 13, 'D', BLACK, WHITE, 2);
+    drawChar(178, 13, 'S', BLACK, WHITE, 2);
+  }else{
+    drawChar(154, 13, 'M', BLACK, WHITE, 2);
+  }
+
+  // draw depth
+  drawChar(192, 13, toUC(depth), BLACK, WHITE, 2);
+  if (imperial){
+    drawChar(205, 13, 'F', BLACK, WHITE, 2);
+    drawChar(217, 13, 'T', BLACK, WHITE, 2);
+  }else{
+    drawChar(205, 13, 'M', BLACK, WHITE, 2);
+  }
+
+  // draw units
+  if (imperial){
+    drawChar(258, 13, 'Y', BLACK, WHITE, 2);
+    drawChar(270, 13, 'D', BLACK, WHITE, 2);
+    drawChar(282, 13, 'S', BLACK, WHITE, 2);
+  }else{
+    drawChar(258, 13, 'M', BLACK, WHITE, 2);
+  }
 
   switch(position){
     // Pace
     case 0:
       drawFastHLine(SHARPMEM_LCDWIDTH/5, 0, SHARPMEM_LCDWIDTH, BLACK);
-      drawFastHLine(SHARPMEM_LCDWIDTH/5, 40, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(SHARPMEM_LCDWIDTH/5, 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Break
     case 1:
       drawFastHLine(0, 0, SHARPMEM_LCDWIDTH/5, BLACK);
       drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
 
-      drawFastHLine(0, 40, SHARPMEM_LCDWIDTH/5, BLACK);
-      drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 39, SHARPMEM_LCDWIDTH/5, BLACK);
+      drawFastHLine((2*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Length
     case 2:
       drawFastHLine(0, 0, (2*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
 
-      drawFastHLine(0, 40, (2*SHARPMEM_LCDWIDTH/5), BLACK);
-      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 39, (2*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Depth
     case 3:
       drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
 
-      drawFastHLine(0, 40, (2*SHARPMEM_LCDWIDTH/5), BLACK);
-      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 40, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 39, (2*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Units
     case 5:
       drawFastHLine(0, 0, (4*SHARPMEM_LCDWIDTH/5), BLACK);
-      drawFastHLine(0, 40, (4*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine(0, 39, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
     default:
       drawFastHLine(0, 0, SHARPMEM_LCDWIDTH, BLACK);
-      drawFastHLine(0, 40, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
   }
 }
@@ -403,7 +448,7 @@ void Adafruit_SharpMem::refresh(uint8_t section){
       break;
     case 1: // second section - Tab line
       startline = 41;
-      totalbytes = SHARPMEM_LCDWIDTH / 8;
+      totalbytes = (SHARPMEM_LCDWIDTH * 40) / 8;
       break;
     case 2: // third section - set values under tabs
       startline = 42;
@@ -475,6 +520,9 @@ void Adafruit_SharpMem::renderTime(uint8_t min, uint8_t sec){
   - uses stored values for the tab settings numbers and drawTime numbers
 */
 void Adafruit_SharpMem::renderScreenPace(void){
+  drawTabs();
+  refreshTabs();
+
   drawTabSettings(0);
   refreshTabSettings();
 
@@ -598,4 +646,41 @@ void Adafruit_SharpMem::setDepth(uint8_t dep){
 }
 void Adafruit_SharpMem::setImperial(bool imp){
   imperial = imp;
+}
+
+unsigned char Adafruit_SharpMem::toUC(uint8_t in){
+  switch (in) {
+    case 0:
+      return '0';
+      break;
+    case 1:
+      return '1';
+      break;
+    case 2:
+      return '2';
+      break;
+    case 3:
+      return '3';
+      break;
+    case 4:
+      return '4';
+      break;
+    case 5:
+      return '5';
+      break;
+    case 6:
+      return '6';
+      break;
+    case 7:
+      return '7';
+      break;
+    case 8:
+      return '8';
+      break;
+    case 9:
+      return '9';
+      break;
+    default:
+      break;
+  }
 }

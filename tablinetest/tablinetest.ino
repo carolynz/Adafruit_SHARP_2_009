@@ -41,12 +41,10 @@ void setup(void)
   display.begin();
   display.clearDisplay();
   delay(500);
-//
-//  display.drawTabs();
-//  display.refreshTabs();
-  
-//  display.renderScreenPace(true, 1, 1);
-//  incrementTimeTest();
+
+  Serial.println(display.getPaceMin());
+  Serial.println(display.getPaceSec());
+
   usageTest();
 }
 
@@ -87,6 +85,8 @@ void usageTest(void){
     seconds = i % 60;
     display.renderTime(minutes, seconds);
   }
+  display.setPaceMin(minutes);
+  display.setPaceSec(seconds);
   
   // simulate setting break time
   display.renderScreenBreak();
@@ -94,7 +94,9 @@ void usageTest(void){
   for (int i = 0; i < 10; i++){
     display.renderTime(0, i);
   }
+  display.setBreakMin(minutes);
+  display.setBreakSec(seconds);
   
   // simulate setting units
-//  display.renderScreenUnits();
+  display.renderScreenUnits();
 }

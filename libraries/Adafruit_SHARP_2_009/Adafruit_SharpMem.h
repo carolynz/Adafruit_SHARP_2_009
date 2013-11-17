@@ -94,6 +94,9 @@ class Adafruit_SharpMem : public Adafruit_GFX {
     setLength(uint8_t len),
     setDepth(uint8_t dep),
     setImperial(bool imp);
+  
+  unsigned char toUC(uint8_t in);
+
 
  private:
   volatile uint8_t *dataport, *clkport;
