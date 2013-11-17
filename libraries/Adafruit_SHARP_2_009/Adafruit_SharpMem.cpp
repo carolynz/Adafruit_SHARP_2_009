@@ -258,6 +258,8 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
       drawFastHLine(0, 40, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
     default:
+      drawFastHLine(0, 0, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 40, SHARPMEM_LCDWIDTH, BLACK);
       break;
   }
 }
