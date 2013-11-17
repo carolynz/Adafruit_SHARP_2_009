@@ -352,16 +352,12 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 			      const uint8_t *bitmap, int16_t w, int16_t h,
 			      uint16_t color) {
 
-  // int16_t i, j, byteWidth = (w + 7) / 8;
-  int16_t i, j;
-  
-  // for each row
+  int16_t i, j, byteWidth = (w + 7) / 8;
+
   for(j=0; j<h; j++) {
-    //for each pixel in the row
-    for(i=0; i<w; i++) {
-      // if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
-      if(pgm_read_byte(bitmap + j * w + i)) {
-      	drawPixel(x+i, y+j, color);
+    for(i=0; i<w; i++ ) {
+      if(pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+	drawPixel(x+i, y+j, color);
       }
     }
   }
