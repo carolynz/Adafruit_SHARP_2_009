@@ -81,7 +81,6 @@ void setup() {
   thetaLaser_0 = 36.87/180*3.14;
   thetaGalvo = 0;
   thetaGalvo_deg = 0;
-  diodeOffset = length*.05;
 
 //Variable Inputs (From UI)
   totalRest = display.getBreakMin()*60+display.getBreakSec();
@@ -91,6 +90,7 @@ void setup() {
   countdownSec = 0;
   height_Far = height_Near;
   slope = (height_Far-height_Near)/length;
+  diodeOffset = length*.05;
   calculateVelocity();
   
   forward = true;
@@ -135,17 +135,18 @@ void loop(){
     UI_Setup();  
   if(mode==0){
     UI_Setup();
-//    Galvo_Pause();
+    Galvo_Pause();
 }
   else if(mode==1){
-//    UI_Swim();
+    UI_Swim();
     Galvo_Swim();
   }
   else{
-//    UI_Pause();
-//    Galvo_Pause();
+    UI_Pause();
+    Galvo_Pause();
 }
   delay(wait);
+  Serial.println(mode);
 }
 //*************************************************************
 // currentScreen = 0 -> Pace
@@ -262,10 +263,13 @@ void UI_Pause(){
 }
 //*************************************************************
 void Galvo_Swim(){
+  velocityX=5;
+//  Serial.println(velocityX);
   //Check Direction
   if((x>length)&(forward==true)){
     forward = false;
-    velocityX = - velocityX;}
+    velocityX = - velocityX;  
+}
   if((x<0)&(forward==false)){
     forward = true;
     velocityX = -velocityX;
