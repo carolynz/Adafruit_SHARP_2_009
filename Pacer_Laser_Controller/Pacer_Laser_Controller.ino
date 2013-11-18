@@ -155,7 +155,6 @@ void loop(){
     Galvo_Swim();
   }
   else{
-//    UI_Pause();
     Galvo_Pause();
   }
   Serial.println(mode);
@@ -277,22 +276,7 @@ void UI_Setup(){
       }
     }
 } 
-//*************************************************************
-void UI_Pause(){
-  display.renderScreenPause(countdownSec);
-  if((analogRead(startButton) == 1023)){
-    mode = 1;
-    countdownSec=5;
-  }
-  countdownSec--;
-  if(countdownSec==0){
-    mode = 0;
-    countdownSec=5;
-    display.renderScreenPace();
-    currentScreen=0;
-  }    
-  delay(10);
-}
+
 //*************************************************************
 void Galvo_Swim(){
   if((analogRead(startButton) == 1023)){
@@ -336,19 +320,23 @@ void Galvo_Pause(){
   if((analogRead(startButton) == 1023)){
     mode = 1;
     display.renderScreenSwim(lapCount);
-    analogWrite(relay1, 5);
-    analogWrite(relay2, 5);
+    analogWrite(relay1, 255);
+    analogWrite(relay2, 255);
   }
   
-  display.renderScreenPause(countdownSec);
-  countdownSec--;
-  if(countdownSec==0){
-    mode = 0;
-    countdownSec=5;
-    display.renderScreenPace();
-    currentScreen=0;
-  }    
-  delay(10);
+  if (mode == 2){
+    display.renderScreenPause(countdownSec);
+    countdownSec--;
+    if(countdownSec==0){
+      mode = 0;
+      countdownSec=5;
+      display.renderScreenPace();
+      currentScreen=0;
+      lapCount = 1;
+    }    
+    delay(950);
+  }
+  
   
   analogWrite(sweepGalvo,0);
   x=0;

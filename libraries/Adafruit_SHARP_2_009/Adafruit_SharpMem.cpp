@@ -278,12 +278,12 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
 
   // draw depth
   drawChar(192, 13, toUC(depth), BLACK, WHITE, 2);
-  if (imperial){
+  // if (imperial){
     drawChar(205, 13, 'F', BLACK, WHITE, 2);
     drawChar(217, 13, 'T', BLACK, WHITE, 2);
-  }else{
-    drawChar(205, 13, 'M', BLACK, WHITE, 2);
-  }
+  // }else{
+  //   drawChar(205, 13, 'M', BLACK, WHITE, 2);
+  // }
 
   // draw units
   if (imperial){
@@ -540,19 +540,20 @@ void Adafruit_SharpMem::renderDepth(uint8_t dep){
   refreshCentral();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  if (imperial){
+  // if (imperial){
     drawChar(130, 10, 'F', BLACK, WHITE, 3);
     drawChar(150, 10, 'E', BLACK, WHITE, 3);
     drawChar(170, 10, 'E', BLACK, WHITE, 3);
     drawChar(190, 10, 'T', BLACK, WHITE, 3);
-  } else {
-    drawChar(130, 10, 'M', BLACK, WHITE, 3);
-    drawChar(150, 10, 'E', BLACK, WHITE, 3);
-    drawChar(170, 10, 'T', BLACK, WHITE, 3);
-    drawChar(190, 10, 'E', BLACK, WHITE, 3);
-    drawChar(210, 10, 'R', BLACK, WHITE, 3);
-    drawChar(230, 10, 'S', BLACK, WHITE, 3);
-  }
+  // }
+  // else {
+  //   drawChar(130, 10, 'M', BLACK, WHITE, 3);
+  //   drawChar(150, 10, 'E', BLACK, WHITE, 3);
+  //   drawChar(170, 10, 'T', BLACK, WHITE, 3);
+  //   drawChar(190, 10, 'E', BLACK, WHITE, 3);
+  //   drawChar(210, 10, 'R', BLACK, WHITE, 3);
+  //   drawChar(230, 10, 'S', BLACK, WHITE, 3);
+  // }
   refreshDenominator();
 }
 
