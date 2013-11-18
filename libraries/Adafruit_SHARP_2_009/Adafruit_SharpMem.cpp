@@ -325,11 +325,11 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
       drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Units
-    case 5:
+    case 4:
       drawFastHLine(0, 0, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine(0, 39, (4*SHARPMEM_LCDWIDTH/5), BLACK);
       break;
-    default:
+    default: // if in swim/pause mode
       drawFastHLine(0, 0, SHARPMEM_LCDWIDTH, BLACK);
       drawFastHLine(0, 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
@@ -584,10 +584,54 @@ void Adafruit_SharpMem::renderScreenUnits(void){
 }
 
 void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
+  drawTabs();
+  refreshTabs();
 
+  drawTabSettings(5);
+  refreshTabSettings();
+
+  if (laps < 10){
+    void drawNum(150, 0, laps);    
+  } else {
+    void drawNum(120, 0, laps/10);
+    void drawNum(190, 0, laps%10);
+  }
+  refreshCentral();
+
+  drawChar(55, 10, 'L', BLACK, WHITE, 3);
+  drawChar(70, 10, 'A', BLACK, WHITE, 3);
+  drawChar(90, 10, 'P', BLACK, WHITE, 3);
+  drawChar(110, 10, 'S', BLACK, WHITE, 3);
+  refreshDenominator();
 }
 
 void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
+  drawTabs();
+  refreshTabs();
+
+  drawTabSettings(5);
+  refreshTabSettings();
+
+  if (seconds < 10){
+    void drawNum(150, 0, seconds);    
+  } else {
+    void drawNum(120, 0, seconds/10);
+    void drawNum(190, 0, seconds%10);
+  }
+
+  rawChar(55, 10, 'S', BLACK, WHITE, 3);
+  drawChar(70, 10, 'E', BLACK, WHITE, 3);
+  drawChar(90, 10, 'C', BLACK, WHITE, 3);
+  drawChar(110, 10, 'O', BLACK, WHITE, 3);
+  drawChar(130, 10, 'N', BLACK, WHITE, 3);
+  drawChar(150, 10, 'D', BLACK, WHITE, 3);
+  drawChar(170, 10, 'S', BLACK, WHITE, 3);
+
+  drawChar(210, 10, 'L', BLACK, WHITE, 3);
+  drawChar(230, 10, 'E', BLACK, WHITE, 3);
+  drawChar(250, 10, 'F', BLACK, WHITE, 3);
+  drawChar(270, 10, 'T', BLACK, WHITE, 3);
+  refreshDenominator();
 
 }
 
@@ -615,7 +659,6 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y)
 uint8_t Adafruit_SharpMem::getPaceMin(void){
   return paceMin;
 }
-
 uint8_t Adafruit_SharpMem::getPaceSec(void){
   return paceSec;
 }

@@ -42,12 +42,6 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   void drawTabs(void);
   void drawTabSettings(uint8_t position);
-  // void drawTabSettings(uint8_t position,
-  //                      uint8_t paceMin = 1, uint8_t paceSec = 0,
-  //                      uint8_t breakMin = 0, uint8_t breakSec = 0,
-  //                      uint8_t length = 5,
-  //                      uint8_t depth = 3,
-  //                      uint8_t imperial = true);
   void drawTime(uint8_t min, uint8_t sec);
   void drawNum(int16_t x, int16_t y, uint8_t num);
   void drawColon(int16_t x, int16_t y);
