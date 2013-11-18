@@ -619,7 +619,7 @@ void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
     drawNum(190, 0, seconds%10);
   }
 
-  rawChar(55, 10, 'S', BLACK, WHITE, 3);
+  drawChar(55, 10, 'S', BLACK, WHITE, 3);
   drawChar(70, 10, 'E', BLACK, WHITE, 3);
   drawChar(90, 10, 'C', BLACK, WHITE, 3);
   drawChar(110, 10, 'O', BLACK, WHITE, 3);
