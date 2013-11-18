@@ -83,15 +83,6 @@ void setup() {
   thetaGalvo_deg = 0;
 
 //Variable Inputs (From UI)
-  totalRest = display.getBreakMin()*60+display.getBreakSec();
-  imperial = display.getImperial();
-  length = display.getLength();
-  height_Near = display.getDepth();
-  countdownSec = 0;
-  height_Far = height_Near;
-  slope = (height_Far-height_Near)/length;
-  diodeOffset = length*.05;
-  calculateVelocity();
   
   forward = true;
   lineLeft = true;
@@ -126,27 +117,40 @@ void setup() {
   display.begin();
   display.clearDisplay();
   display.renderScreenPace();
-  totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+  
+  totalSec = display.getPaceMin() * 60 + display.getPaceSec();  
+  totalRest = display.getBreakMin()*60+display.getBreakSec();
+  imperial = display.getImperial();
+  length = display.getLength();
+  height_Near = display.getDepth();
+  length = 10;
+  
+  countdownSec = 0;
+  height_Far = height_Near;
+  slope = (height_Far-height_Near)/length;
+  diodeOffset = length*.05;
+  calculateVelocity();
+  velocityX=10;
   
   TCCR1B = TCCR1B & 0b11110001 | 0x01;
 }
 //*************************************************************
-void loop(){
-    UI_Setup();  
+void loop(){  
   if(mode==0){
     UI_Setup();
     Galvo_Pause();
 }
   else if(mode==1){
-    UI_Swim();
+//    UI_Swim();
+    Serial.println(sweepSignal);
     Galvo_Swim();
   }
   else{
     UI_Pause();
     Galvo_Pause();
-}
-  delay(wait);
+  }
   Serial.println(mode);
+  delay(wait);
 }
 //*************************************************************
 // currentScreen = 0 -> Pace
@@ -156,7 +160,6 @@ void loop(){
 // currentScreen = 4 -> Units
 
 void UI_Setup(){
-  if (mode == 0){
       if((analogRead(Select) == 1023) || (analogRead(Next) == 1023)){
       //if current screen is pace screen
       if(currentScreen == 0){                //Pace to Break
@@ -235,14 +238,10 @@ void UI_Setup(){
       }
       display.renderTime(totalSec / 60, totalSec % 60);
     }
-    
-    if((analogRead(startButton) == 1023)){
-      mode = 1;
-    }
-    countdownSec=10;
+    countdownSec=5;
   }
   
-}
+
 //*************************************************************
 void UI_Swim(){
   display.renderScreenSwim(lapCount);
@@ -255,32 +254,36 @@ void UI_Pause(){
   display.renderScreenPause(countdownSec);
   if((analogRead(startButton) == 1023)){
     mode = 1;
+    countdownSec=5;
   }
   countdownSec--;
   if(countdownSec==0){
-    mode = 1;}    
-  delay(950);
+    mode = 1;
+    countdownSec=5;}    
+  delay(10);
 }
 //*************************************************************
 void Galvo_Swim(){
-  velocityX=5;
-//  Serial.println(velocityX);
+  if((analogRead(startButton) == 1023)){
+    mode = 2;
+  }
   //Check Direction
   if((x>length)&(forward==true)){
     forward = false;
-    velocityX = - velocityX;  
-}
+    velocityX = - velocityX;
+  }
   if((x<0)&(forward==false)){
     forward = true;
     velocityX = -velocityX;
     lapCount++;
+    display.renderScreenSwim(lapCount);
   }
     
   //Diode Control
-  if((x>diodeOffset)&(x<(length-diodeOffset))){
-    diodeOn();}
-  else{
-    diodeOff();}
+//  if((x>diodeOffset)&(x<(length-diodeOffset))){
+//    diodeOn();}
+//  else{
+//    diodeOff();}
 
   //Sweep
   x = x+velocityX*dt;
@@ -288,14 +291,17 @@ void Galvo_Swim(){
   thetaLaser_deg = thetaLaser*180/3.14;
   thetaGalvo = (thetaLaser-thetaLaser_0)/2;
   thetaGalvo_deg = thetaGalvo*180/3.14;
-  sweepSignal = map(thetaLaser_deg,0,90,pwmMin,pwmMax);
-//  sweepSignal = map(thetaGalvo_deg,-thetaLaser_0/2,(90-thetaLaser_0)/2,pwmMin,pwmMax);
-  analogWrite(sweepGalvo,sweepSignal);
- 
+  sweepSignal = thetaLaser_deg*(255/90);
+  analogWrite(sweepGalvo,sweepSignal); 
 }  
 //*************************************************************
 void Galvo_Pause(){
+  if((analogRead(startButton) == 1023)){
+    mode = 1;
+    display.renderScreenSwim(lapCount);
+  }
   analogWrite(sweepGalvo,0);
+  x=0;
   diodeOff();
 }
 //*************************************************************
