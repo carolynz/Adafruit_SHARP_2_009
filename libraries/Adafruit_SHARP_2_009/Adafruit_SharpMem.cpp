@@ -564,6 +564,8 @@ void Adafruit_SharpMem::renderScreenLength(void){
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   refreshCentral();
+  refreshDenominator();
+
 }
 
 
