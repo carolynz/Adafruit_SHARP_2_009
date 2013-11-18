@@ -615,6 +615,7 @@ void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
   }
   refreshCentral();
 
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   drawChar(55, 10, 'L', BLACK, WHITE, 3);
   drawChar(70, 10, 'A', BLACK, WHITE, 3);
   drawChar(90, 10, 'P', BLACK, WHITE, 3);
@@ -638,6 +639,7 @@ void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
     drawNum(190, 0, seconds%10);
   }
 
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   drawChar(55, 10, 'S', BLACK, WHITE, 3);
   drawChar(70, 10, 'E', BLACK, WHITE, 3);
   drawChar(90, 10, 'C', BLACK, WHITE, 3);
