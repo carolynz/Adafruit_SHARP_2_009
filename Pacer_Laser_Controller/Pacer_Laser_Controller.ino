@@ -33,6 +33,8 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
   double height_Far;
   double length;
   boolean imperial;
+  boolean tempImperial;
+  int tempNumber;
 
 //Galvo Controller Constants
   int lineGalvo;
@@ -41,6 +43,7 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
   int pwmMin;
   int pwmMax;
   int lapCount;
+  int relay1, relay2;
   
   double velocityX;
   double sweepSignal;
@@ -90,7 +93,7 @@ void setup() {
 //Pin Mapping
   lineGalvo = 11;
   sweepGalvo = 12;
-  diode = 50;
+  diode = 8;
 
   Select = A0;
   Decrease = A1;
@@ -98,6 +101,9 @@ void setup() {
   Before = A3;
   Next = A4;
   startButton = A7;
+  
+  relay1 = 9;
+  relay2 = 10;
 
 //Pin Mode Setup  
   pinMode(Select, INPUT);
@@ -111,6 +117,9 @@ void setup() {
   pinMode(diode,OUTPUT);
   pinMode(lineGalvo,OUTPUT);
   pinMode(sweepGalvo,OUTPUT);
+  
+  pinMode(relay1, OUTPUT);
+  pinMode(relay2, OUTPUT);
 
 //Serial Monitoring  
   Serial.begin(9600);
@@ -124,8 +133,10 @@ void setup() {
   length = display.getLength();
   height_Near = display.getDepth();
   length = 10;
+  tempNumber = display.getLength();
+  tempImperial = display.getImperial();
   
-  countdownSec = 0;
+  countdownSec = 5;
   height_Far = height_Near;
   slope = (height_Far-height_Near)/length;
   diodeOffset = length*.05;
@@ -141,12 +152,10 @@ void loop(){
     Galvo_Pause();
 }
   else if(mode==1){
-//    UI_Swim();
-    Serial.println(sweepSignal);
     Galvo_Swim();
   }
   else{
-    UI_Pause();
+//    UI_Pause();
     Galvo_Pause();
   }
   Serial.println(mode);
@@ -173,23 +182,24 @@ void UI_Setup(){
       else if (currentScreen == 1){          //Break to Length
         display.setBreakMin(totalSec / 60);
         display.setBreakSec(totalSec % 60);
+        tempNumber = display.getLength();
         display.renderScreenLength();
         currentScreen = 2;
-  
-  
       }
       else if (currentScreen == 2){        //Length to Depth
-      //  display.setLength();
+        display.setLength(tempNumber);
+        tempNumber = display.getDepth();
         display.renderScreenDepth();
         currentScreen = 3;
       }
       else if (currentScreen == 3){        //Depth to units
-        // display.setDepth();
+        display.setDepth(tempNumber);
+        tempImperial = display.getImperial();
         display.renderScreenUnits();
         currentScreen = 4;
       }
       else{        //Units to Pace
-        // display.setUnits();
+        display.setImperial(tempImperial);
         totalSec = display.getPaceMin() * 60 + display.getPaceSec();
         display.renderScreenPace();
         currentScreen = 0;
@@ -202,6 +212,7 @@ void UI_Setup(){
         display.setPaceSec(totalSec % 60);
         calculateVelocity();
         display.renderScreenUnits();
+        tempImperial = display.getImperial();
         currentScreen = 4;
       }
       else if(currentScreen == 1){            //Break to Pace
@@ -213,42 +224,59 @@ void UI_Setup(){
       }
       
       else if(currentScreen == 2){            //Length to Break
+        display.setLength(tempNumber);
         totalSec = display.getBreakMin() * 60 + display.getBreakSec();
         display.renderScreenBreak();
         currentScreen = 1;
       }
       else if(currentScreen == 3){            //Depth to Length
+        display.setDepth(tempNumber);
+        tempNumber = display.getLength();
         display.renderScreenLength();
         currentScreen = 2;
       }
       else if(currentScreen == 4){            //Units to Depth
+        display.setImperial(tempImperial);
+        tempNumber = display.getDepth();
         display.renderScreenDepth();
         currentScreen = 3;
       }
     }
     
     if((analogRead(Increase) == 1023)){
-      totalSec++;
-      display.renderTime(totalSec / 60, totalSec % 60);
+      if ((currentScreen == 0) || (currentScreen == 1)){
+        totalSec++;
+        display.renderTime(totalSec / 60, totalSec % 60);
+      } else if (currentScreen == 2){ // length screen
+        tempNumber++;
+        display.renderLength(tempNumber);
+      } else if (currentScreen == 3){ // depth screen
+        tempNumber++;
+        display.renderDepth(tempNumber);
+      } else if (currentScreen == 4){ // units screen
+        tempImperial = !tempImperial;
+        display.renderUnits(tempImperial);
+
+      }
     }
     
     if((analogRead(Decrease) == 1023)){
-      if(totalSec>0){
+      if (((currentScreen == 0) || (currentScreen == 1)) && (totalSec>0)){
         totalSec--;
+        display.renderTime(totalSec / 60, totalSec % 60);
+      } else if (tempNumber > 0){
+        tempNumber--;
+        if (currentScreen == 2){
+          display.renderLength(tempNumber);          
+        }else if (currentScreen == 3){ // depth screen
+          display.renderDepth(tempNumber);
+        }
+      }else if (currentScreen == 4){ // units screen
+        tempImperial = !tempImperial;
+        display.renderUnits(tempImperial);
       }
-      display.renderTime(totalSec / 60, totalSec % 60);
     }
-    countdownSec=5;
-  }
-  
-
-//*************************************************************
-void UI_Swim(){
-  display.renderScreenSwim(lapCount);
-  if((analogRead(startButton) == 1023)){
-    mode = 2;
-  }
-}
+} 
 //*************************************************************
 void UI_Pause(){
   display.renderScreenPause(countdownSec);
@@ -258,14 +286,19 @@ void UI_Pause(){
   }
   countdownSec--;
   if(countdownSec==0){
-    mode = 1;
-    countdownSec=5;}    
+    mode = 0;
+    countdownSec=5;
+    display.renderScreenPace();
+    currentScreen=0;
+  }    
   delay(10);
 }
 //*************************************************************
 void Galvo_Swim(){
   if((analogRead(startButton) == 1023)){
     mode = 2;
+    analogWrite(relay1, 0);
+    analogWrite(relay2, 0);
   }
   //Check Direction
   if((x>length)&(forward==true)){
@@ -281,9 +314,13 @@ void Galvo_Swim(){
     
   //Diode Control
 //  if((x>diodeOffset)&(x<(length-diodeOffset))){
-//    diodeOn();}
+//    diodeOn();
+//  }
 //  else{
 //    diodeOff();}
+
+  analogWrite(diode, 255);
+
 
   //Sweep
   x = x+velocityX*dt;
@@ -299,10 +336,23 @@ void Galvo_Pause(){
   if((analogRead(startButton) == 1023)){
     mode = 1;
     display.renderScreenSwim(lapCount);
+    analogWrite(relay1, 5);
+    analogWrite(relay2, 5);
   }
+  
+  display.renderScreenPause(countdownSec);
+  countdownSec--;
+  if(countdownSec==0){
+    mode = 0;
+    countdownSec=5;
+    display.renderScreenPace();
+    currentScreen=0;
+  }    
+  delay(10);
+  
   analogWrite(sweepGalvo,0);
   x=0;
-  diodeOff();
+  analogWrite(diode, 255);
 }
 //*************************************************************
 void calculateVelocity(){
@@ -310,10 +360,10 @@ void calculateVelocity(){
 }
 //*************************************************************
 void diodeOn(){
-  digitalWrite(diode,HIGH);
+  analogWrite(diode, 255);
 }
 //*************************************************************
 void diodeOff(){
-  digitalWrite(diode,LOW);
+  analogWrite(diode, 0);
 }
 //*************************************************************

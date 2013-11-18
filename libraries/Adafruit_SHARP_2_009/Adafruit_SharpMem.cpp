@@ -321,8 +321,8 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
       drawFastHLine(0, 0, (3*SHARPMEM_LCDWIDTH/5), BLACK);
       drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 0, SHARPMEM_LCDWIDTH, BLACK);
 
-      drawFastHLine(0, 39, (2*SHARPMEM_LCDWIDTH/5), BLACK);
-      drawFastHLine((3*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
+      drawFastHLine(0, 39, (3*SHARPMEM_LCDWIDTH/5), BLACK);
+      drawFastHLine((4*SHARPMEM_LCDWIDTH/5), 39, SHARPMEM_LCDWIDTH, BLACK);
       break;
     // Units
     case 4:
@@ -403,18 +403,31 @@ void Adafruit_SharpMem::drawNum(int16_t x, int16_t y, uint8_t num){
       break;
   }
 }
-void Adafruit_SharpMem::drawDenominator(int16_t length, bool imperial){
+void Adafruit_SharpMem::drawDenominator(){
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   drawFastHLine(54, 0, 212, BLACK);
   drawFastHLine(54, 1, 212, BLACK);
 
-  drawChar(55, 10, '1', BLACK, WHITE, 3);
-  drawChar(70, 10, '0', BLACK, WHITE, 3);
-  drawChar(90, 10, '0', BLACK, WHITE, 3);
+  uint8_t lapLength = 2*length;
+  if (lapLength < 10){
+    drawChar(55, 10, toUC(lapLength), BLACK, WHITE, 3);
+  } else if (lapLength < 100) {
+    drawChar(55, 10, toUC(lapLength/10), BLACK, WHITE, 3);
+    drawChar(70, 10, toUC(lapLength%10), BLACK, WHITE, 3);
+  } else {
+    drawChar(55, 10, toUC(lapLength/100), BLACK, WHITE, 3);
+    drawChar(70, 10, toUC((lapLength%100)/10), BLACK, WHITE, 3);
+    drawChar(90, 10, toUC(lapLength%10), BLACK, WHITE, 3);
+  }
 
-  drawChar(125, 10, 'Y', BLACK, WHITE, 3);
-  drawChar(145, 10, 'D', BLACK, WHITE, 3);
-  drawChar(165, 10, 'S', BLACK, WHITE, 3);
+  if (imperial){
+    drawChar(125, 10, 'Y', BLACK, WHITE, 3);
+    drawChar(145, 10, 'D', BLACK, WHITE, 3);
+    drawChar(165, 10, 'S', BLACK, WHITE, 3);    
+  } else {
+    drawChar(125, 10, 'M', BLACK, WHITE, 3);
+  }
+
 }
 
 /**************************************************************************/
@@ -515,6 +528,104 @@ void Adafruit_SharpMem::renderTime(uint8_t min, uint8_t sec){
   refreshCentral();
 }
 
+void Adafruit_SharpMem::renderDepth(uint8_t dep){
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+
+  if (dep < 10){
+    drawNum(150, 0, dep);    
+  } else {
+    drawNum(120, 0, dep/10);
+    drawNum(190, 0, dep%10);
+  }
+  refreshCentral();
+
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+  if (imperial){
+    drawChar(130, 10, 'F', BLACK, WHITE, 3);
+    drawChar(150, 10, 'E', BLACK, WHITE, 3);
+    drawChar(170, 10, 'E', BLACK, WHITE, 3);
+    drawChar(190, 10, 'T', BLACK, WHITE, 3);
+  } else {
+    drawChar(130, 10, 'M', BLACK, WHITE, 3);
+    drawChar(150, 10, 'E', BLACK, WHITE, 3);
+    drawChar(170, 10, 'T', BLACK, WHITE, 3);
+    drawChar(190, 10, 'E', BLACK, WHITE, 3);
+    drawChar(210, 10, 'R', BLACK, WHITE, 3);
+    drawChar(230, 10, 'S', BLACK, WHITE, 3);
+  }
+  refreshDenominator();
+}
+
+void Adafruit_SharpMem::renderLength(uint8_t len){
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+
+  if (len < 10){
+    drawNum(150, 0, len);    
+  } else {
+    drawNum(120, 0, len/10);
+    drawNum(190, 0, len%10);
+  }
+  refreshCentral();
+
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+  if (imperial){
+    drawChar(130, 10, 'Y', BLACK, WHITE, 3);
+    drawChar(150, 10, 'A', BLACK, WHITE, 3);
+    drawChar(170, 10, 'R', BLACK, WHITE, 3);
+    drawChar(190, 10, 'D', BLACK, WHITE, 3);
+    drawChar(210, 10, 'S', BLACK, WHITE, 3);
+  } else {
+    drawChar(130, 10, 'M', BLACK, WHITE, 3);
+    drawChar(150, 10, 'E', BLACK, WHITE, 3);
+    drawChar(170, 10, 'T', BLACK, WHITE, 3);
+    drawChar(190, 10, 'E', BLACK, WHITE, 3);
+    drawChar(210, 10, 'R', BLACK, WHITE, 3);
+    drawChar(230, 10, 'S', BLACK, WHITE, 3);
+  }
+  refreshDenominator();
+}
+
+void Adafruit_SharpMem::renderUnits(bool imp){
+  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
+  drawChar(55, 0, 'Y', BLACK, WHITE, 3);
+  drawChar(75, 0, 'A', BLACK, WHITE, 3);
+  drawChar(95, 0, 'R', BLACK, WHITE, 3);
+  drawChar(115, 0, 'D', BLACK, WHITE, 3);
+  drawChar(135, 0, 'S', BLACK, WHITE, 3);
+
+  drawChar(55, 40, 'M', BLACK, WHITE, 3);
+  drawChar(75, 40, 'E', BLACK, WHITE, 3);
+  drawChar(95, 40, 'T', BLACK, WHITE, 3);
+  drawChar(115, 40, 'E', BLACK, WHITE, 3);
+  drawChar(135, 40, 'R', BLACK, WHITE, 3);
+  drawChar(155, 40, 'S', BLACK, WHITE, 3);
+  if (imp){
+    drawFastVLine(45, 0, 20, BLACK);
+    drawFastVLine(46, 1, 18, BLACK);
+    drawFastVLine(47, 2, 16, BLACK);
+    drawFastVLine(48, 3, 14, BLACK);
+    drawFastVLine(49, 4, 12, BLACK);
+    drawFastVLine(50, 5, 10, BLACK);
+    drawFastVLine(51, 6, 8, BLACK);
+    drawFastVLine(52, 7, 6, BLACK);
+    drawFastVLine(53, 8, 4, BLACK);
+    drawFastVLine(54, 9, 2, BLACK);
+  } else {
+    drawFastVLine(45, 40, 20, BLACK);
+    drawFastVLine(46, 41, 18, BLACK);
+    drawFastVLine(47, 42, 16, BLACK);
+    drawFastVLine(48, 43, 14, BLACK);
+    drawFastVLine(49, 44, 12, BLACK);
+    drawFastVLine(50, 45, 10, BLACK);
+    drawFastVLine(51, 46, 8, BLACK);
+    drawFastVLine(52, 47, 6, BLACK);
+    drawFastVLine(53, 48, 4, BLACK);
+    drawFastVLine(54, 49, 2, BLACK);
+  }
+  refreshCentral();
+
+}
+
 /*! 
   Displays the Pace screen
   - uses stored values for the tab settings numbers and drawTime numbers
@@ -562,12 +673,8 @@ void Adafruit_SharpMem::renderScreenLength(void){
   drawTabSettings(2);
   refreshTabSettings();
 
-  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  refreshCentral();
-  refreshDenominator();
-
+  renderLength(length);
 }
-
 
 void Adafruit_SharpMem::renderScreenDepth(void){
   drawTabs();
@@ -577,10 +684,7 @@ void Adafruit_SharpMem::renderScreenDepth(void){
   drawTabSettings(3);
   refreshTabSettings();
 
-  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  refreshCentral();
-  refreshDenominator();
-
+  renderDepth(depth);
 }
 
 
@@ -592,10 +696,9 @@ void Adafruit_SharpMem::renderScreenUnits(void){
   drawTabSettings(4);
   refreshTabSettings();
 
+  renderUnits(imperial);
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  refreshCentral();
   refreshDenominator();
-
 }
 
 void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
@@ -616,10 +719,10 @@ void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
   refreshCentral();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawChar(55, 10, 'L', BLACK, WHITE, 3);
-  drawChar(70, 10, 'A', BLACK, WHITE, 3);
-  drawChar(90, 10, 'P', BLACK, WHITE, 3);
-  drawChar(110, 10, 'S', BLACK, WHITE, 3);
+  drawChar(130, 10, 'L', BLACK, WHITE, 3);
+  drawChar(150, 10, 'A', BLACK, WHITE, 3);
+  drawChar(170, 10, 'P', BLACK, WHITE, 3);
+  drawChar(190, 10, 'S', BLACK, WHITE, 3);
   refreshDenominator();
 }
 
@@ -638,9 +741,10 @@ void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
     drawNum(120, 0, seconds/10);
     drawNum(190, 0, seconds%10);
   }
+  refreshCentral();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawChar(55, 10, 'S', BLACK, WHITE, 3);
+  drawChar(50, 10, 'S', BLACK, WHITE, 3);
   drawChar(70, 10, 'E', BLACK, WHITE, 3);
   drawChar(90, 10, 'C', BLACK, WHITE, 3);
   drawChar(110, 10, 'O', BLACK, WHITE, 3);

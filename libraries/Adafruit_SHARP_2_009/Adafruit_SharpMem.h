@@ -45,7 +45,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   void drawTime(uint8_t min, uint8_t sec);
   void drawNum(int16_t x, int16_t y, uint8_t num);
   void drawColon(int16_t x, int16_t y);
-  void drawDenominator(int16_t length = 100, bool imperial = true);
+  void drawDenominator(void);
   // REFRESH functions draw buffer contents to the screen
   // at the appropriate locations
   void refresh(uint8_t section);
@@ -58,7 +58,9 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   // RENDER functions wrap draw + refresh. 
   // Use these.
   void renderTime(uint8_t min, uint8_t sec);
-  // TODO: write the other center renders
+  void renderDepth(uint8_t dep);
+  void renderLength(uint8_t len);
+  void renderUnits(bool imp);
 
   void renderScreenPace(void);
   void renderScreenBreak(void);
