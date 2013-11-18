@@ -24,17 +24,21 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
   int Before;
   int Next;
   int currentScreen;
-  int totalSec;
   int countdownSec;
+  int initialCountdown;
+  int countdownCalibration;
 
 //Variable Inputs (From UI)
+  int tempNumber;
+  int totalSec;
   int totalRest;
+  int totalPace;
+  int intervalLength; //new: 2*length
   double height_Near;
   double height_Far;
   double length;
   boolean imperial;
   boolean tempImperial;
-  int tempNumber;
 
 //Galvo Controller Constants
   int lineGalvo;
@@ -45,6 +49,8 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
   int lapCount;
   int relay1, relay2;
   
+  double thicknessOffset; // new
+  double waterLineOffset; // new
   double velocityX;
   double sweepSignal;
   double lineSignal;
@@ -68,6 +74,7 @@ void setup() {
 //UI Constants/Initializations
   currentScreen = 0;
   mode = 0;
+  countdownCalibration = 100;
   
 //Galvo Controller Constants/Initializations
   lapCount = 1;
@@ -91,9 +98,11 @@ void setup() {
   lineLeft = true;
 
 //Pin Mapping
+  diode = 8;
+  relay1 = 9;
+  relay2 = 10;
   lineGalvo = 11;
   sweepGalvo = 12;
-  diode = 8;
 
   Select = A0;
   Decrease = A1;
@@ -101,9 +110,6 @@ void setup() {
   Before = A3;
   Next = A4;
   startButton = A7;
-  
-  relay1 = 9;
-  relay2 = 10;
 
 //Pin Mode Setup  
   pinMode(Select, INPUT);
@@ -115,11 +121,10 @@ void setup() {
   pinMode(Next, INPUT);
 
   pinMode(diode,OUTPUT);
-  pinMode(lineGalvo,OUTPUT);
-  pinMode(sweepGalvo,OUTPUT);
-  
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
+  pinMode(lineGalvo,OUTPUT);
+  pinMode(sweepGalvo,OUTPUT);
 
 //Serial Monitoring  
   Serial.begin(9600);
@@ -127,21 +132,21 @@ void setup() {
   display.clearDisplay();
   display.renderScreenPace();
   
-  totalSec = display.getPaceMin() * 60 + display.getPaceSec();  
+  initialCountdown = 5*countdownCalibration;
+  countdownSec = initialCountdown;
+  totalSec = display.getPaceMin()*60 + display.getPaceSec();  
+  totalPace = display.getPaceMin()*60 + display.getPaceSec();  
   totalRest = display.getBreakMin()*60+display.getBreakSec();
   imperial = display.getImperial();
   length = display.getLength();
+  intervalLength = 2*length;
   height_Near = display.getDepth();
-  length = 10;
   tempNumber = display.getLength();
   tempImperial = display.getImperial();
-  
-  countdownSec = 5;
   height_Far = height_Near;
   slope = (height_Far-height_Near)/length;
   diodeOffset = length*.05;
-  calculateVelocity();
-  velocityX=10;
+  velocityX = 5;
   
   TCCR1B = TCCR1B & 0b11110001 | 0x01;
 }
@@ -157,7 +162,20 @@ void loop(){
   else{
     Galvo_Pause();
   }
-  Serial.println(mode);
+  velocityX = 2*length/totalPace;
+//  Serial.print(mode);
+//  Serial.print(" ");
+//  Serial.print(imperial);
+//  Serial.print(" ");
+//  Serial.print(display.getLength());
+//  Serial.print(" ");
+//  Serial.print(intervalLength);
+//  Serial.print(" ");
+//  Serial.print(display.getPaceMin()*60+display.getPaceSec());
+//  Serial.print(" ");
+//  Serial.print(velocityX);
+  Serial.print(" ");
+  Serial.println(x,10);
   delay(wait);
 }
 //*************************************************************
@@ -173,8 +191,8 @@ void UI_Setup(){
       if(currentScreen == 0){                //Pace to Break
         display.setPaceMin(totalSec / 60);
         display.setPaceSec(totalSec % 60);
-        calculateVelocity();
         totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+        totalPace = display.getPaceMin()*60+display.getPaceSec();
         display.renderScreenBreak();
         currentScreen = 1;
       }
@@ -182,24 +200,29 @@ void UI_Setup(){
         display.setBreakMin(totalSec / 60);
         display.setBreakSec(totalSec % 60);
         tempNumber = display.getLength();
+        totalRest = display.getBreakMin()*60+display.getBreakSec();
         display.renderScreenLength();
         currentScreen = 2;
       }
       else if (currentScreen == 2){        //Length to Depth
         display.setLength(tempNumber);
         tempNumber = display.getDepth();
+        length = display.getLength();
+        intervalLength = 2*length;
         display.renderScreenDepth();
         currentScreen = 3;
       }
       else if (currentScreen == 3){        //Depth to units
         display.setDepth(tempNumber);
         tempImperial = display.getImperial();
+        height_Near = display.getDepth();
         display.renderScreenUnits();
         currentScreen = 4;
       }
-      else{        //Units to Pace
+      else{                                //Units to Pace
         display.setImperial(tempImperial);
         totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+        imperial = display.getImperial();
         display.renderScreenPace();
         currentScreen = 0;
       }
@@ -209,7 +232,7 @@ void UI_Setup(){
       if(currentScreen == 0){
         display.setPaceMin(totalSec / 60);
         display.setPaceSec(totalSec % 60);
-        calculateVelocity();
+        totalPace = display.getPaceMin()*60+display.getPaceSec();
         display.renderScreenUnits();
         tempImperial = display.getImperial();
         currentScreen = 4;
@@ -218,6 +241,7 @@ void UI_Setup(){
         display.setBreakMin(totalSec / 60);
         display.setBreakSec(totalSec % 60);
         totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+        totalRest = display.getBreakMin()*60+display.getBreakSec();
         display.renderScreenPace();
         currentScreen = 0;
       }
@@ -225,18 +249,22 @@ void UI_Setup(){
       else if(currentScreen == 2){            //Length to Break
         display.setLength(tempNumber);
         totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+        length = display.getLength();
+        intervalLength = 2*length;
         display.renderScreenBreak();
         currentScreen = 1;
       }
       else if(currentScreen == 3){            //Depth to Length
         display.setDepth(tempNumber);
         tempNumber = display.getLength();
+        height_Near = display.getDepth();
         display.renderScreenLength();
         currentScreen = 2;
       }
       else if(currentScreen == 4){            //Units to Depth
         display.setImperial(tempImperial);
         tempNumber = display.getDepth();
+        imperial = display.getImperial();
         display.renderScreenDepth();
         currentScreen = 3;
       }
@@ -304,11 +332,15 @@ void Galvo_Swim(){
 //    diodeOff();}
 
   analogWrite(diode, 255);
-
-
+  
   //Sweep
   x = x+velocityX*dt;
-  thetaLaser = atan2(x,height_Near+slope*x);
+  if(imperial){
+    thetaLaser = atan2(x,(height_Near+slope*x)/3);
+  }
+  else{
+    thetaLaser = atan2(x,height_Near+slope*x);
+  }
   thetaLaser_deg = thetaLaser*180/3.14;
   thetaGalvo = (thetaLaser-thetaLaser_0)/2;
   thetaGalvo_deg = thetaGalvo*180/3.14;
@@ -317,34 +349,32 @@ void Galvo_Swim(){
 }  
 //*************************************************************
 void Galvo_Pause(){
-  if((analogRead(startButton) == 1023)){
-    mode = 1;
-    display.renderScreenSwim(lapCount);
-    analogWrite(relay1, 255);
-    analogWrite(relay2, 255);
-  }
-  
   if (mode == 2){
-    display.renderScreenPause(countdownSec);
+    if(countdownSec%countdownCalibration==0){
+    display.renderScreenPause((int)countdownSec/countdownCalibration);}
     countdownSec--;
     if(countdownSec==0){
       mode = 0;
-      countdownSec=5;
+      countdownSec=initialCountdown;
       display.renderScreenPace();
       currentScreen=0;
       lapCount = 1;
     }    
-    delay(950);
   }
-  
-  
+  if((analogRead(startButton) == 1023)){
+    mode = 1;
+    countdownSec=initialCountdown;
+    display.renderScreenSwim(lapCount);
+    analogWrite(relay1, 255);
+    analogWrite(relay2, 255);
+  }
   analogWrite(sweepGalvo,0);
+  analogWrite(diode, 0);
   x=0;
-  analogWrite(diode, 255);
 }
 //*************************************************************
 void calculateVelocity(){
-  velocityX = display.getLength() / (display.getPaceMin()*60 + display.getPaceSec());
+  velocityX = intervalLength/totalPace;
 }
 //*************************************************************
 void diodeOn(){
