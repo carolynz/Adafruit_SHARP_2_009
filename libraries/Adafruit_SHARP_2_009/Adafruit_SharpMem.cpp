@@ -577,6 +577,8 @@ void Adafruit_SharpMem::renderScreenDepth(void){
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   refreshCentral();
+  refreshDenominator();
+
 }
 
 
@@ -590,6 +592,8 @@ void Adafruit_SharpMem::renderScreenUnits(void){
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   refreshCentral();
+  refreshDenominator();
+
 }
 
 void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
@@ -624,7 +628,6 @@ void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
   refreshTabSettings();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  
 
   if (seconds < 10){
     drawNum(150, 0, seconds);    
