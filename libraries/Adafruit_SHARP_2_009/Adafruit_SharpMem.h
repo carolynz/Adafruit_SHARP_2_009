@@ -72,7 +72,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   void renderScreenDepth(void);
   void renderScreenUnits(void);
   void renderScreenSwim(uint8_t laps);
-  // void renderScreenPause(uint8_t seconds);
+  void renderScreenPause(uint8_t seconds);
 
   // getters and setters
   uint8_t

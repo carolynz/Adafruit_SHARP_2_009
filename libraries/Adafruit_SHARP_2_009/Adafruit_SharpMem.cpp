@@ -583,6 +583,15 @@ void Adafruit_SharpMem::renderScreenUnits(void){
   refreshTabSettings();
 }
 
+void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
+
+}
+
+void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
+
+}
+
+
 /**************************************************************************/
 /*! 
     @brief Gets the value (1 or 0) of the specified pixel from the buffer

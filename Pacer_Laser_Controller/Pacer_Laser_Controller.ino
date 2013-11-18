@@ -172,7 +172,7 @@ void Galvo_Swim(){
     forward = true;
     velocityX = -velocityX;
     lapCount++;
-//    display.renderScreenSwim(lapCount);
+    display.renderScreenSwim(lapCount);
   }
     
   //Diode Control
