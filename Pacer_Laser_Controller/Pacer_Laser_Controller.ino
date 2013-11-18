@@ -25,6 +25,7 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
   int Next;
   int currentScreen;
   int totalSec;
+  int countdownSec;
 
 //Variable Inputs (From UI)
   int totalRest;
@@ -80,14 +81,15 @@ void setup() {
   thetaLaser_0 = 36.87/180*3.14;
   thetaGalvo = 0;
   thetaGalvo_deg = 0;
+  diodeOffset = length*.05;
 
 //Variable Inputs (From UI)
   totalRest = display.getBreakMin()*60+display.getBreakSec();
   imperial = display.getImperial();
   length = display.getLength();
   height_Near = display.getDepth();
+  countdownSec = 0;
   height_Far = height_Near;
-  diodeOffset = length*.05;
   slope = (height_Far-height_Near)/length;
   calculateVelocity();
   
@@ -118,9 +120,6 @@ void setup() {
   pinMode(diode,OUTPUT);
   pinMode(lineGalvo,OUTPUT);
   pinMode(sweepGalvo,OUTPUT);
-  
-//  TCCR0A = _BV(COM0A1) | _BV(COM0B1) | _BV(WGM01) | _BV(WGM00); 
-//  TCCR0B = _BV(CS00); 
 
 //Serial Monitoring  
   Serial.begin(9600);
@@ -128,8 +127,6 @@ void setup() {
   display.clearDisplay();
   display.renderScreenPace();
   totalSec = display.getPaceMin() * 60 + display.getPaceSec();
-//  setPwmFrequency(5,1);
-//  setPwmFrequency(6,1);
   
   TCCR1B = TCCR1B & 0b11110001 | 0x01;
 }
@@ -163,6 +160,112 @@ void loop(){
 
 }
 //*************************************************************
+// currentScreen = 0 -> Pace
+// currentScreen = 1 -> Break
+// currentScreen = 2 -> Length
+// currentScreen = 3 -> Depth
+// currentScreen = 4 -> Units
+
+void UI_Setup(){
+  if((analogRead(Select) == 1023) || (analogRead(Next) == 1023)){
+    //if current screen is pace screen
+    if(currentScreen == 0){                //Pace to Break
+      display.setPaceMin(totalSec / 60);
+      display.setPaceSec(totalSec % 60);
+      calculateVelocity();
+      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+      display.renderScreenBreak();
+      currentScreen = 1;
+    }
+    else if (currentScreen == 1){          //Break to Length
+      display.setBreakMin(totalSec / 60);
+      display.setBreakSec(totalSec % 60);
+      display.renderScreenLength();
+      currentScreen = 2;
+
+
+    }
+    else if (currentScreen == 2){        //Length to Depth
+      display.renderScreenDepth();
+      currentScreen = 3;
+    }
+    else if (currentScreen == 3){        //Depth to units
+      display.renderScreenUnits();
+      currentScreen = 4;
+    }
+    else{        //Units to Pace
+      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+      display.renderScreenPace();
+      currentScreen = 0;
+    }
+  }
+  
+  if (analogRead(Before) == 1023){          //Pace to Units
+    if(currentScreen == 0){
+      display.setPaceMin(totalSec / 60);
+      display.setPaceSec(totalSec % 60);
+      calculateVelocity();
+      display.renderScreenUnits();
+      currentScreen = 4;
+    }
+    else if(currentScreen == 1){            //Break to Pace
+      display.setBreakMin(totalSec / 60);
+      display.setBreakSec(totalSec % 60);
+      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+      display.renderScreenPace();
+      currentScreen = 0;
+    }
+    
+    else if(currentScreen == 2){            //Length to Break
+      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+      display.renderScreenPace();
+      currentScreen = 1;
+    }
+    else if(currentScreen == 3){            //Depth to Length
+      display.renderScreenLength();
+      currentScreen = 2;
+    }
+    else if(currentScreen == 4){            //Units to Depth
+      display.renderScreenDepth();
+      currentScreen = 3;
+    }
+  }
+  
+  if((analogRead(Increase) == 1023)){
+    totalSec++;
+    display.renderTime(totalSec / 60, totalSec % 60);
+  }
+  
+  if((analogRead(Decrease) == 1023)){
+  if(totalSec>0){
+    totalSec--;}
+    display.renderTime(totalSec / 60, totalSec % 60);
+  }
+  
+  if((analogRead(startButton) == 1023)){
+    mode = 1;
+  }
+  countdownSec=10;
+}
+//*************************************************************
+void UI_Swim(){
+  display.renderScreenSwim(lapCount);
+  if((analogRead(startButton) == 1023)){
+    mode = 2;
+  }
+}
+//*************************************************************
+void UI_Pause(){
+  display.renderScreenPause(countdownSec);
+  if((analogRead(startButton) == 1023)){
+    mode = 1;
+  }
+  countdownSec--;
+  if(countdownSec==0){
+    mode = 1;}    
+  delay(950);
+}
+//*************************************************************
 void Galvo_Swim(){
   //Check Direction
   if((x>length)&(forward==true)){
@@ -172,12 +275,11 @@ void Galvo_Swim(){
     forward = true;
     velocityX = -velocityX;
     lapCount++;
-    display.renderScreenSwim(lapCount);
   }
     
   //Diode Control
   if((x>diodeOffset)&(x<(length-diodeOffset))){
-    diodeOff();}
+    diodeOn();}
   else{
     diodeOff();}
 
@@ -190,57 +292,12 @@ void Galvo_Swim(){
   sweepSignal = map(thetaLaser_deg,0,90,pwmMin,pwmMax);
 //  sweepSignal = map(thetaGalvo_deg,-thetaLaser_0/2,(90-thetaLaser_0)/2,pwmMin,pwmMax);
   analogWrite(sweepGalvo,sweepSignal);
+ 
 }  
 //*************************************************************
-void UI_Setup(){
-  if((analogRead(Select) == 1023) || (analogRead(Next) == 1023)){
-    //if current screen is pace screen
-    if(currentScreen == 0){
-      display.setPaceMin(totalSec / 60);
-      display.setPaceSec(totalSec % 60);
-      calculateVelocity();
-      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
-      display.renderScreenBreak();
-      currentScreen = 1;
-    } else {
-      display.setBreakMin(totalSec / 60);
-      display.setBreakSec(totalSec % 60);
-      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
-      display.renderScreenPace();
-      currentScreen = 0;
-    }
-  }
-  
-  if (analogRead(Before) == 1023){
-    if(currentScreen == 0){
-      display.setPaceMin(totalSec / 60);
-      display.setPaceSec(totalSec % 60);
-      calculateVelocity();
-      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
-      display.renderScreenBreak();
-      currentScreen = 1;
-    } else {
-      display.setBreakMin(totalSec / 60);
-      display.setBreakSec(totalSec % 60);
-      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
-      display.renderScreenPace();
-      currentScreen = 0;
-    }
-  }
-  
-  if((analogRead(Increase) == 1023)){
-    totalSec++;
-    display.renderTime(totalSec / 60, totalSec % 60);
-  }
-  
-  if((analogRead(Decrease) == 1023)){
-    totalSec--;
-    display.renderTime(totalSec / 60, totalSec % 60);
-  }
-  
-  if((analogRead(startButton) == 1023)){
-    mode = 1;
-  }
+void Galvo_Pause(){
+  analogWrite(sweepGalvo,0);
+  diodeOff();
 }
 //*************************************************************
 void calculateVelocity(){
