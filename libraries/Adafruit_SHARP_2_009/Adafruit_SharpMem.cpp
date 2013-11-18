@@ -591,10 +591,10 @@ void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
   refreshTabSettings();
 
   if (laps < 10){
-    void drawNum(150, 0, laps);    
+    drawNum(150, 0, laps);    
   } else {
-    void drawNum(120, 0, laps/10);
-    void drawNum(190, 0, laps%10);
+    drawNum(120, 0, laps/10);
+    drawNum(190, 0, laps%10);
   }
   refreshCentral();
 
@@ -613,10 +613,10 @@ void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
   refreshTabSettings();
 
   if (seconds < 10){
-    void drawNum(150, 0, seconds);    
+    drawNum(150, 0, seconds);    
   } else {
-    void drawNum(120, 0, seconds/10);
-    void drawNum(190, 0, seconds%10);
+    drawNum(120, 0, seconds/10);
+    drawNum(190, 0, seconds%10);
   }
 
   rawChar(55, 10, 'S', BLACK, WHITE, 3);
