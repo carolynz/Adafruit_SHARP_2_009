@@ -146,18 +146,6 @@ void loop(){
 //    Galvo_Pause();
 }
   delay(wait);
-  Serial.println(mode);
-//  Serial.print(x);
-//  Serial.print(" ");
-//  Serial.print(thetaLaser_deg,10);
-//  Serial.print(" ");
-//  Serial.print(thetaGalvo_deg,10);
-//  Serial.print(" ");
-//  Serial.println(thetaLaser-2*thetaGalvo);
-
-//  analogWrite(sweepGalvo,0);
-//  delay(100);
-
 }
 //*************************************************************
 // currentScreen = 0 -> Pace
@@ -167,85 +155,92 @@ void loop(){
 // currentScreen = 4 -> Units
 
 void UI_Setup(){
-  if((analogRead(Select) == 1023) || (analogRead(Next) == 1023)){
-    //if current screen is pace screen
-    if(currentScreen == 0){                //Pace to Break
-      display.setPaceMin(totalSec / 60);
-      display.setPaceSec(totalSec % 60);
-      calculateVelocity();
-      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
-      display.renderScreenBreak();
-      currentScreen = 1;
-    }
-    else if (currentScreen == 1){          //Break to Length
-      display.setBreakMin(totalSec / 60);
-      display.setBreakSec(totalSec % 60);
-      display.renderScreenLength();
-      currentScreen = 2;
-
-
-    }
-    else if (currentScreen == 2){        //Length to Depth
-      display.renderScreenDepth();
-      currentScreen = 3;
-    }
-    else if (currentScreen == 3){        //Depth to units
-      display.renderScreenUnits();
-      currentScreen = 4;
-    }
-    else{        //Units to Pace
-      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
-      display.renderScreenPace();
-      currentScreen = 0;
-    }
-  }
+  if (mode == 0){
+      if((analogRead(Select) == 1023) || (analogRead(Next) == 1023)){
+      //if current screen is pace screen
+      if(currentScreen == 0){                //Pace to Break
+        display.setPaceMin(totalSec / 60);
+        display.setPaceSec(totalSec % 60);
+        calculateVelocity();
+        totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+        display.renderScreenBreak();
+        currentScreen = 1;
+      }
+      else if (currentScreen == 1){          //Break to Length
+        display.setBreakMin(totalSec / 60);
+        display.setBreakSec(totalSec % 60);
+        display.renderScreenLength();
+        currentScreen = 2;
   
-  if (analogRead(Before) == 1023){          //Pace to Units
-    if(currentScreen == 0){
-      display.setPaceMin(totalSec / 60);
-      display.setPaceSec(totalSec % 60);
-      calculateVelocity();
-      display.renderScreenUnits();
-      currentScreen = 4;
-    }
-    else if(currentScreen == 1){            //Break to Pace
-      display.setBreakMin(totalSec / 60);
-      display.setBreakSec(totalSec % 60);
-      totalSec = display.getPaceMin() * 60 + display.getPaceSec();
-      display.renderScreenPace();
-      currentScreen = 0;
+  
+      }
+      else if (currentScreen == 2){        //Length to Depth
+      //  display.setLength();
+        display.renderScreenDepth();
+        currentScreen = 3;
+      }
+      else if (currentScreen == 3){        //Depth to units
+        // display.setDepth();
+        display.renderScreenUnits();
+        currentScreen = 4;
+      }
+      else{        //Units to Pace
+        // display.setUnits();
+        totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+        display.renderScreenPace();
+        currentScreen = 0;
+      }
     }
     
-    else if(currentScreen == 2){            //Length to Break
-      totalSec = display.getBreakMin() * 60 + display.getBreakSec();
-      display.renderScreenPace();
-      currentScreen = 1;
+    if (analogRead(Before) == 1023){          //Pace to Units
+      if(currentScreen == 0){
+        display.setPaceMin(totalSec / 60);
+        display.setPaceSec(totalSec % 60);
+        calculateVelocity();
+        display.renderScreenUnits();
+        currentScreen = 4;
+      }
+      else if(currentScreen == 1){            //Break to Pace
+        display.setBreakMin(totalSec / 60);
+        display.setBreakSec(totalSec % 60);
+        totalSec = display.getPaceMin() * 60 + display.getPaceSec();
+        display.renderScreenPace();
+        currentScreen = 0;
+      }
+      
+      else if(currentScreen == 2){            //Length to Break
+        totalSec = display.getBreakMin() * 60 + display.getBreakSec();
+        display.renderScreenBreak();
+        currentScreen = 1;
+      }
+      else if(currentScreen == 3){            //Depth to Length
+        display.renderScreenLength();
+        currentScreen = 2;
+      }
+      else if(currentScreen == 4){            //Units to Depth
+        display.renderScreenDepth();
+        currentScreen = 3;
+      }
     }
-    else if(currentScreen == 3){            //Depth to Length
-      display.renderScreenLength();
-      currentScreen = 2;
+    
+    if((analogRead(Increase) == 1023)){
+      totalSec++;
+      display.renderTime(totalSec / 60, totalSec % 60);
     }
-    else if(currentScreen == 4){            //Units to Depth
-      display.renderScreenDepth();
-      currentScreen = 3;
+    
+    if((analogRead(Decrease) == 1023)){
+      if(totalSec>0){
+        totalSec--;
+      }
+      display.renderTime(totalSec / 60, totalSec % 60);
     }
+    
+    if((analogRead(startButton) == 1023)){
+      mode = 1;
+    }
+    countdownSec=10;
   }
   
-  if((analogRead(Increase) == 1023)){
-    totalSec++;
-    display.renderTime(totalSec / 60, totalSec % 60);
-  }
-  
-  if((analogRead(Decrease) == 1023)){
-  if(totalSec>0){
-    totalSec--;}
-    display.renderTime(totalSec / 60, totalSec % 60);
-  }
-  
-  if((analogRead(startButton) == 1023)){
-    mode = 1;
-  }
-  countdownSec=10;
 }
 //*************************************************************
 void UI_Swim(){
