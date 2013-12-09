@@ -187,36 +187,37 @@ void Adafruit_SharpMem::drawTabs(void){
   // draw top line of tabs
   drawFastHLine(0, 0, 320, BLACK);
 
-  //TODO: change x-coords for 5-tab layout
-  drawChar(4, 13, 'P', BLACK, WHITE, 2);
-  drawChar(16, 13, 'A', BLACK, WHITE, 2);
-  drawChar(28, 13, 'C', BLACK, WHITE, 2);
-  drawChar(40, 13, 'E', BLACK, WHITE, 2);
+  // drawChar(4, 13, 'P', BLACK, WHITE, 2);
+  // drawChar(16, 13, 'A', BLACK, WHITE, 2);
+  // drawChar(28, 13, 'C', BLACK, WHITE, 2);
+  // drawChar(40, 13, 'E', BLACK, WHITE, 2);
 
-  // drawChar(68, 13, 'B', BLACK, WHITE, 2);
-  // drawChar(80, 13, 'R', BLACK, WHITE, 2);
-  // drawChar(92, 13, 'E', BLACK, WHITE, 2);
-  // drawChar(104, 13, 'A', BLACK, WHITE, 2);
-  // drawChar(116, 13, 'K', BLACK, WHITE, 2);
+  drawBitmap(4, 13, paceSmall, 50, 14, BLACK);
 
-  drawChar(82, 13, 'L', BLACK, WHITE, 2);
-  drawChar(94, 13, 'E', BLACK, WHITE, 2);
-  drawChar(106, 13, 'N', BLACK, WHITE, 2);
-  drawChar(118, 13, 'G', BLACK, WHITE, 2);
-  drawChar(130, 13, 'T', BLACK, WHITE, 2);
-  drawChar(142, 13, 'H', BLACK, WHITE, 2);
+  // drawChar(82, 13, 'L', BLACK, WHITE, 2);
+  // drawChar(94, 13, 'E', BLACK, WHITE, 2);
+  // drawChar(106, 13, 'N', BLACK, WHITE, 2);
+  // drawChar(118, 13, 'G', BLACK, WHITE, 2);
+  // drawChar(130, 13, 'T', BLACK, WHITE, 2);
+  // drawChar(142, 13, 'H', BLACK, WHITE, 2);
   
-  drawChar(163, 13, 'D', BLACK, WHITE, 2);
-  drawChar(175, 13, 'E', BLACK, WHITE, 2);
-  drawChar(187, 13, 'P', BLACK, WHITE, 2);
-  drawChar(199, 13, 'T', BLACK, WHITE, 2);
-  drawChar(211, 13, 'H', BLACK, WHITE, 2);
+  drawBitmap(82, 13, lengthSmall, 78, 14, BLACK);
 
-  drawChar(249, 13, 'U', BLACK, WHITE, 2);
-  drawChar(261, 13, 'N', BLACK, WHITE, 2);
-  drawChar(273, 13, 'I', BLACK, WHITE, 2);
-  drawChar(285, 13, 'T', BLACK, WHITE, 2);
-  drawChar(297, 13, 'S', BLACK, WHITE, 2);
+  // drawChar(163, 13, 'D', BLACK, WHITE, 2);
+  // drawChar(175, 13, 'E', BLACK, WHITE, 2);
+  // drawChar(187, 13, 'P', BLACK, WHITE, 2);
+  // drawChar(199, 13, 'T', BLACK, WHITE, 2);
+  // drawChar(211, 13, 'H', BLACK, WHITE, 2);
+
+  drawBitmap(163, 13, depthSmall, 64, 14, BLACK);
+
+  // drawChar(249, 13, 'U', BLACK, WHITE, 2);
+  // drawChar(261, 13, 'N', BLACK, WHITE, 2);
+  // drawChar(273, 13, 'I', BLACK, WHITE, 2);
+  // drawChar(285, 13, 'T', BLACK, WHITE, 2);
+  // drawChar(297, 13, 'S', BLACK, WHITE, 2);
+
+  drawBitmap(249, 13, unitsSmall, 57, 14, BLACK);
 
   drawFastVLine(0, 0, 40, BLACK);
   drawFastVLine(79, 0, 40, BLACK);
@@ -265,12 +266,15 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
 
   }
   if (imperial){
-    drawChar(116, 13, 'Y', BLACK, WHITE, 2);
-    drawChar(128, 13, 'D', BLACK, WHITE, 2);
-    drawChar(140, 13, 'S', BLACK, WHITE, 2);
+    drawBitmap(116, 13, ydsSmall, 32, 17, BLACK);
+
+    // drawChar(116, 13, 'Y', BLACK, WHITE, 2);
+    // drawChar(128, 13, 'D', BLACK, WHITE, 2);
+    // drawChar(140, 13, 'S', BLACK, WHITE, 2);
 
   }else{
-    drawChar(116, 13, 'M', BLACK, WHITE, 2);
+    drawBitmap(116, 17, mSmall, 15, 10, BLACK);
+    // drawChar(116, 13, 'M', BLACK, WHITE, 2);
   }
 
   // draw depth
@@ -283,13 +287,17 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
 
     if (depthShallow < 10){
       drawChar(186, 13, toUC(depthShallow), BLACK, WHITE, 2);
-      drawChar(208, 13, 'F', BLACK, WHITE, 2);
-      drawChar(220, 13, 'T', BLACK, WHITE, 2);
+      drawBitmap(208, 13, ftSmall, 15, 16, BLACK);
+
+      // drawChar(208, 13, 'F', BLACK, WHITE, 2);
+      // drawChar(220, 13, 'T', BLACK, WHITE, 2);
     } else {
       drawChar(186, 13, toUC(depthShallow/10), BLACK, WHITE, 2);
       drawChar(198, 13, toUC(depthShallow%10), BLACK, WHITE, 2);
-      drawChar(220, 13, 'F', BLACK, WHITE, 2);
-      drawChar(232, 13, 'T', BLACK, WHITE, 2);
+      // drawChar(220, 13, 'F', BLACK, WHITE, 2);
+      // drawChar(232, 13, 'T', BLACK, WHITE, 2);
+      drawBitmap(220, 13, ftSmall, 15, 16, BLACK);
+
     } 
   } else {
     drawChar(162, 13, toUC(depthDeep/10), BLACK, WHITE, 2);
@@ -298,33 +306,36 @@ void Adafruit_SharpMem::drawTabSettings(uint8_t position){
     drawFastHLine(186, 21, 10, BLACK);
     if (depthShallow < 10){
       drawChar(198, 13, toUC(depthShallow), BLACK, WHITE, 2);
-      drawChar(215, 13, 'F', BLACK, WHITE, 2);
-      drawChar(227, 13, 'T', BLACK, WHITE, 2);
+      // drawChar(215, 13, 'F', BLACK, WHITE, 2);
+      // drawChar(227, 13, 'T', BLACK, WHITE, 2);
+      drawBitmap(215, 13, ftSmall, 15, 16, BLACK);
+
     } else {
       drawChar(198, 13, toUC(depthShallow/10), BLACK, WHITE, 2);
       drawChar(210, 13, toUC(depthShallow%10), BLACK, WHITE, 2);
-      drawChar(225, 13, 'F', BLACK, WHITE, 2);
-      drawChar(230, 13, 'T', BLACK, WHITE, 2);
+      // drawChar(225, 13, 'F', BLACK, WHITE, 2);
+      // drawChar(230, 13, 'T', BLACK, WHITE, 2);
+      drawBitmap(225, 13, ftSmall, 15, 16, BLACK);
+
     } 
   }
 
-  // drawChar(175, 13, 'F', BLACK, WHITE, 2);
-  // drawChar(187, 13, 'T', BLACK, WHITE, 2);
-
   // draw units
   if (imperial){
-    drawChar(249, 13, 'Y', BLACK, WHITE, 2);
-    drawChar(261, 13, 'A', BLACK, WHITE, 2);
-    drawChar(273, 13, 'R', BLACK, WHITE, 2);
-    drawChar(285, 13, 'D', BLACK, WHITE, 2);
-    drawChar(297, 13, 'S', BLACK, WHITE, 2);
+    drawBitmap(249, 13, yardsSmall, 50, 14, BLACK);
+    // drawChar(249, 13, 'Y', BLACK, WHITE, 2);
+    // drawChar(261, 13, 'A', BLACK, WHITE, 2);
+    // drawChar(273, 13, 'R', BLACK, WHITE, 2);
+    // drawChar(285, 13, 'D', BLACK, WHITE, 2);
+    // drawChar(297, 13, 'S', BLACK, WHITE, 2);
   }else{
-    drawChar(243, 13, 'M', BLACK, WHITE, 2);
-    drawChar(255, 13, 'E', BLACK, WHITE, 2);
-    drawChar(267, 13, 'T', BLACK, WHITE, 2);
-    drawChar(279, 13, 'E', BLACK, WHITE, 2);
-    drawChar(291, 13, 'R', BLACK, WHITE, 2);
-    drawChar(303, 13, 'S', BLACK, WHITE, 2);
+    drawBitmap(243, 13, metersSmall, 65, 14, BLACK);
+    // drawChar(243, 13, 'M', BLACK, WHITE, 2);
+    // drawChar(255, 13, 'E', BLACK, WHITE, 2);
+    // drawChar(267, 13, 'T', BLACK, WHITE, 2);
+    // drawChar(279, 13, 'E', BLACK, WHITE, 2);
+    // drawChar(291, 13, 'R', BLACK, WHITE, 2);
+    // drawChar(303, 13, 'S', BLACK, WHITE, 2);
   }
 
   switch(position){
@@ -434,16 +445,19 @@ void Adafruit_SharpMem::drawDenominator(){
   drawFastHLine(54, 0, 212, BLACK);
   drawFastHLine(54, 1, 212, BLACK);
 
-  drawChar(55, 10, toUC(1), BLACK, WHITE, 3);
-  drawChar(70, 10, toUC(0), BLACK, WHITE, 3);
-  drawChar(90, 10, toUC(0), BLACK, WHITE, 3);
+  drawBitmap(55, 10, hundred, 91, 40, BLACK);
+  // drawChar(55, 10, toUC(1), BLACK, WHITE, 3);
+  // drawChar(70, 10, toUC(0), BLACK, WHITE, 3);
+  // drawChar(90, 10, toUC(0), BLACK, WHITE, 3);
 
   if (imperial){
-    drawChar(125, 10, 'Y', BLACK, WHITE, 3);
-    drawChar(145, 10, 'D', BLACK, WHITE, 3);
-    drawChar(165, 10, 'S', BLACK, WHITE, 3);    
+    drawBitmap(156, 10, ydsLarge, 55, 34, BLACK);
+    // drawChar(125, 10, 'Y', BLACK, WHITE, 3);
+    // drawChar(145, 10, 'D', BLACK, WHITE, 3);
+    // drawChar(165, 10, 'S', BLACK, WHITE, 3);    
   } else {
-    drawChar(125, 10, 'M', BLACK, WHITE, 3);
+    drawBitmap(156, 20, mLarge, 30, 20, BLACK);
+    // drawChar(125, 10, 'M', BLACK, WHITE, 3);
   }
 
 }
@@ -569,18 +583,20 @@ void Adafruit_SharpMem::renderDepth(uint8_t deep, uint8_t shallow, uint8_t side)
   refreshCentral();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawChar(50, 10, 'D', BLACK, WHITE, 3);
-  drawChar(70, 10, 'E', BLACK, WHITE, 3);
-  drawChar(90, 10, 'E', BLACK, WHITE, 3);
-  drawChar(110, 10, 'P', BLACK, WHITE, 3);
+  drawBitmap(50, 10, deepLarge, 96, 37, BLACK);
+  // drawChar(50, 10, 'D', BLACK, WHITE, 3);
+  // drawChar(70, 10, 'E', BLACK, WHITE, 3);
+  // drawChar(90, 10, 'E', BLACK, WHITE, 3);
+  // drawChar(110, 10, 'P', BLACK, WHITE, 3);
 
-  drawChar(170, 10, 'S', BLACK, WHITE, 3);
-  drawChar(190, 10, 'H', BLACK, WHITE, 3);
-  drawChar(210, 10, 'A', BLACK, WHITE, 3);
-  drawChar(230, 10, 'L', BLACK, WHITE, 3);
-  drawChar(250, 10, 'L', BLACK, WHITE, 3);
-  drawChar(270, 10, 'O', BLACK, WHITE, 3);
-  drawChar(290, 10, 'W', BLACK, WHITE, 3);
+  drawBitmap(170, 10, shallowLarge, 144, 30, BLACK);
+  // drawChar(170, 10, 'S', BLACK, WHITE, 3);
+  // drawChar(190, 10, 'H', BLACK, WHITE, 3);
+  // drawChar(210, 10, 'A', BLACK, WHITE, 3);
+  // drawChar(230, 10, 'L', BLACK, WHITE, 3);
+  // drawChar(250, 10, 'L', BLACK, WHITE, 3);
+  // drawChar(270, 10, 'O', BLACK, WHITE, 3);
+  // drawChar(290, 10, 'W', BLACK, WHITE, 3);
 
   switch(side){
     case 0:
@@ -609,26 +625,27 @@ void Adafruit_SharpMem::renderLength(uint8_t len){
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
   if (imperial){
-    drawChar(130, 10, 'Y', BLACK, WHITE, 3);
-    drawChar(150, 10, 'A', BLACK, WHITE, 3);
-    drawChar(170, 10, 'R', BLACK, WHITE, 3);
-    drawChar(190, 10, 'D', BLACK, WHITE, 3);
-    drawChar(210, 10, 'S', BLACK, WHITE, 3);
+    drawBitmap(130, 10, yardsLarge, 105, 30, BLACK);
+    // drawChar(130, 10, 'Y', BLACK, WHITE, 3);
+    // drawChar(150, 10, 'A', BLACK, WHITE, 3);
+    // drawChar(170, 10, 'R', BLACK, WHITE, 3);
+    // drawChar(190, 10, 'D', BLACK, WHITE, 3);
+    // drawChar(210, 10, 'S', BLACK, WHITE, 3);
   } else {
-
-    drawChar(130, 10, 'M', BLACK, WHITE, 3);
-    drawChar(150, 10, 'E', BLACK, WHITE, 3);
-    drawChar(170, 10, 'T', BLACK, WHITE, 3);
-    drawChar(190, 10, 'E', BLACK, WHITE, 3);
-    drawChar(210, 10, 'R', BLACK, WHITE, 3);
-    drawChar(230, 10, 'S', BLACK, WHITE, 3);
+    drawBitmap(130, 10, metersLarge, 133, 28, BLACK);
+    // drawChar(130, 10, 'M', BLACK, WHITE, 3);
+    // drawChar(150, 10, 'E', BLACK, WHITE, 3);
+    // drawChar(170, 10, 'T', BLACK, WHITE, 3);
+    // drawChar(190, 10, 'E', BLACK, WHITE, 3);
+    // drawChar(210, 10, 'R', BLACK, WHITE, 3);
+    // drawChar(230, 10, 'S', BLACK, WHITE, 3);
   }
   refreshDenominator();
 }
 
 void Adafruit_SharpMem::renderUnits(bool imp){
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawBitmap(100, 0, yards, 105, 30, BLACK);
+  drawBitmap(100, 0, yardsLarge, 105, 30, BLACK);
 
   // drawChar(55, 0, 'Y', BLACK, WHITE, 3);
   // drawChar(75, 0, 'A', BLACK, WHITE, 3);
@@ -636,7 +653,7 @@ void Adafruit_SharpMem::renderUnits(bool imp){
   // drawChar(115, 0, 'D', BLACK, WHITE, 3);
   // drawChar(135, 0, 'S', BLACK, WHITE, 3);
 
-  drawBitmap(100, 40, meters, 133, 28, BLACK);
+  drawBitmap(100, 40, metersLarge, 133, 28, BLACK);
   // drawChar(55, 40, 'M', BLACK, WHITE, 3);
   // drawChar(75, 40, 'E', BLACK, WHITE, 3);
   // drawChar(95, 40, 'T', BLACK, WHITE, 3);
@@ -743,47 +760,13 @@ void Adafruit_SharpMem::renderScreenSwim(uint8_t laps){
   refreshCentral();
 
   memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawChar(130, 10, 'L', BLACK, WHITE, 3);
-  drawChar(150, 10, 'A', BLACK, WHITE, 3);
-  drawChar(170, 10, 'P', BLACK, WHITE, 3);
-  drawChar(190, 10, 'S', BLACK, WHITE, 3);
+  drawBitmap(130, 10, lapsLarge, 128, 40, BLACK);
+  // drawChar(130, 10, 'L', BLACK, WHITE, 3);
+  // drawChar(150, 10, 'A', BLACK, WHITE, 3);
+  // drawChar(170, 10, 'P', BLACK, WHITE, 3);
+  // drawChar(190, 10, 'S', BLACK, WHITE, 3);
   refreshDenominator();
 }
-
-void Adafruit_SharpMem::renderScreenPause(uint8_t seconds){
-  drawTabs();
-  refreshTabs();
-
-  drawTabSettings(4);
-  refreshTabSettings();
-
-  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-
-  if (seconds < 10){
-    drawNum(150, 0, seconds);    
-  } else {
-    drawNum(120, 0, seconds/10);
-    drawNum(190, 0, seconds%10);
-  }
-  refreshCentral();
-
-  memset(sectionBuffer, 0xff, (SHARPMEM_LCDWIDTH * BUFFER_HEIGHT) / 8);
-  drawChar(50, 10, 'S', BLACK, WHITE, 3);
-  drawChar(70, 10, 'E', BLACK, WHITE, 3);
-  drawChar(90, 10, 'C', BLACK, WHITE, 3);
-  drawChar(110, 10, 'O', BLACK, WHITE, 3);
-  drawChar(130, 10, 'N', BLACK, WHITE, 3);
-  drawChar(150, 10, 'D', BLACK, WHITE, 3);
-  drawChar(170, 10, 'S', BLACK, WHITE, 3);
-
-  drawChar(210, 10, 'L', BLACK, WHITE, 3);
-  drawChar(230, 10, 'E', BLACK, WHITE, 3);
-  drawChar(250, 10, 'F', BLACK, WHITE, 3);
-  drawChar(270, 10, 'T', BLACK, WHITE, 3);
-  refreshDenominator();
-
-}
-
 
 /**************************************************************************/
 /*! 
