@@ -58,14 +58,14 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   // RENDER functions wrap draw + refresh. 
   // Use these.
   void renderTime(uint8_t min, uint8_t sec);
-  void renderDepth(uint8_t dep);
+  void renderDepth(uint8_t deep, uint8_t shallow, uint8_t side);
   void renderLength(uint8_t len);
   void renderUnits(bool imp);
 
   void renderScreenPace(void);
-  void renderScreenBreak(void);
+  // void renderScreenBreak(void);
   void renderScreenLength(void);
-  void renderScreenDepth(void);
+  void renderScreenDepth(uint8_t side);
   void renderScreenUnits(void);
   void renderScreenSwim(uint8_t laps);
   void renderScreenPause(uint8_t seconds);
@@ -75,20 +75,23 @@ class Adafruit_SharpMem : public Adafruit_GFX {
     getPixel(uint16_t x, uint16_t y),
     getPaceMin(void),
     getPaceSec(void),
-    getBreakMin(void),
-    getBreakSec(void),
+    // getBreakMin(void),
+    // getBreakSec(void),
     getLength(void),
-    getDepth(void);
+    getDepthShallow(void),
+    getDepthDeep(void);
+
 
   bool getImperial(void);
 
   void
     setPaceMin(uint8_t min),
     setPaceSec(uint8_t sec),
-    setBreakMin(uint8_t min),
-    setBreakSec(uint8_t sec),
+    // setBreakMin(uint8_t min),
+    // setBreakSec(uint8_t sec),
     setLength(uint8_t len),
-    setDepth(uint8_t dep),
+    setDepthShallow(uint8_t dep),
+    setDepthDeep(uint8_t dep),
     setImperial(bool imp);
   
   unsigned char toUC(uint8_t in);
@@ -99,8 +102,9 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   uint8_t
     _ss, _clk, _mosi,
     _sharpmem_vcom, datapinmask, clkpinmask,
-    paceMin, paceSec, breakMin, breakSec,
-    length, depth;
+    paceMin, paceSec,
+    // breakMin, breakSec,
+    length, depthShallow, depthDeep;
   bool imperial;
 
   void sendbyte(uint8_t data);
